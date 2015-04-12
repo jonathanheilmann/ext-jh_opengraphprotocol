@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2014-01-14T15:55:43Z" product-name="jh_opengraphprotocol_2">
+		<header/>
+		<body>
+
+			<trans-unit id="title.description">
+				<source>og:title</source>
+			</trans-unit>
+			<trans-unit id="type.description">
+				<source>og:type</source>
+			</trans-unit>
+			<trans-unit id="image.description">
+				<source>og:image</source>
+			</trans-unit>
+			<trans-unit id="sitename.description">
+				<source>og:sitename</source>
+			</trans-unit>
+			<trans-unit id="description.description">
+				<source>og:description</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

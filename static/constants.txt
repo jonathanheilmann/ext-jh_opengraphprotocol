@@ -1,0 +1,15 @@
+
+#cat=plugin.jh_opengraphprotocol/title/010; type=string; label=Title;
+plugin.jh_opengraphprotocol.title =
+
+#cat=plugin.jh_opengraphprotocol/type/020; type=string; label=Type;
+plugin.jh_opengraphprotocol.type =
+
+#cat=plugin.jh_opengraphprotocol/image/030; type=string; label=Image;
+plugin.jh_opengraphprotocol.image = EXT:jh_opengraphprotocol/Resources/Public/Images/nopic.jpg
+
+#cat=plugin.jh_opengraphprotocol/sitename/040; type=string; label=Sitename;
+plugin.jh_opengraphprotocol.sitename =
+
+#cat=plugin.jh_opengraphprotocol/description/050; type=string; label=Description;
+plugin.jh_opengraphprotocol.description =

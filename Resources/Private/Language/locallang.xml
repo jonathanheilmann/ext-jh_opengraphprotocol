@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>default</type>
+		<description>Language labels for database tables/fields belonging to extension 'jh_opengraphprotocol'</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<!-- TCA -->
+			<label index="pages.tab_title">Open Graph protocol</label>
+			<label index="pages.tx_jhopengraphprotocol_ogtitle">Title</label>
+			<label index="pages.tx_jhopengraphprotocol_ogtype">Type</label>
+			<label index="pages.tx_jhopengraphprotocol_ogimage">Image</label>
+			<label index="pages.tx_jhopengraphprotocol_ogdescription">Description</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<!-- TCA -->
+			<label index="pages.tab_title">Open Graph protocol</label>
+			<label index="pages.tx_jhopengraphprotocol_ogtitle">Titel</label>
+			<label index="pages.tx_jhopengraphprotocol_ogtype">Typ</label>
+			<label index="pages.tx_jhopengraphprotocol_ogimage">Bild</label>
+			<label index="pages.tx_jhopengraphprotocol_ogdescription">Beschreibung</label>
+		</languageKey>
+	</data>
+</T3locallang>

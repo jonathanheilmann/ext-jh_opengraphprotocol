@@ -1,0 +1,81 @@
+<f:layout name="Default" />
+
+This Template is responsible for creating a table of domain objects.
+
+If you modify this template, do not forget to change the overwrite settings
+in /Configuration/ExtensionBuilder/settings.yaml:
+  Resources:
+    Private:
+      Templates:
+        List.html: keep
+
+Otherwise your changes will be overwritten the next time you save the extension in the extension builder
+
+
+
+<f:section name="main">
+
+<f:be.container>
+  <!-- Content -->
+</f:be.container>
+<style type="text/css">
+	table.t3-table {
+		width: 100%;
+	}
+	table.t3-table tr td {
+		padding: 5px 1px 5px 6px;
+		font-size: 11px;
+		line-height: 14px;
+	}
+</style>
+
+<div class="typo3-fullDoc">
+	<div id="typo3-docheader">
+		<div id="typo3-docheader-row1"></div>
+		<div id="typo3-docheader-row2"></div>
+	</div>
+	<div id="typo3-docbody">
+		<div id="typo3-inner-docbody">
+			<h2>Migration assistant</h2>
+			<div class="typo3-message message-warning">
+				<f:translate key="LLL:EXT:jh_opengraphprotocol_2/Resources/Private/Language/locallang.xml:safetyAdvice"/>
+			</div>
+			<f:flashMessages renderMode="div" />
+			<table class="t3-table">
+				<f:form action="migrate" name="tools_JhOpengraphprotocol2Migrate">
+					<tr class="t3-row-header">
+						<td><f:translate key="LLL:EXT:jh_opengraphprotocol_2/Resources/Private/Language/locallang.xml:header.description"/></td>
+						<td><f:translate key="LLL:EXT:jh_opengraphprotocol_2/Resources/Private/Language/locallang.xml:header.records"/></td>
+						<td></td>
+					</tr>
+					<tr class="t3-row-odd">
+						<td><f:translate key="LLL:EXT:jh_opengraphprotocol_2/Resources/Private/Language/locallang.xml:description.all"/></td>
+						<td>
+							<f:form.checkbox name="all[pages]" checked="{all.pages}" value="pages" /> <f:translate key="LLL:EXT:jh_opengraphprotocol_2/Resources/Private/Language/locallang.xml:records.all.pages" arguments="{0: all.pages_count}"/><br/>
+							<f:form.checkbox name="all[pages_language_overlay]" checked="{all.pages_language_overlay}" value="pages_language_overlay" /> <f:translate key="LLL:EXT:jh_opengraphprotocol_2/Resources/Private/Language/locallang.xml:records.all.pages_language_overlay" arguments="{0: all.pages_language_overlay_count}"/>
+						</td>
+						<td><f:form.submit name="all[doAction]" value="{f:translate(key:'LLL:EXT:jh_opengraphprotocol_2/Resources/Private/Language/locallang.xml:doAction.migrate')}" /></td>
+					</tr>
+					<tr class="t3-row-even">
+						<td><f:translate key="LLL:EXT:jh_opengraphprotocol_2/Resources/Private/Language/locallang.xml:description.empty"/></td>
+						<td>
+							<f:form.checkbox name="empty[pages]" checked="{empty.pages}" value="pages" /> <f:translate key="LLL:EXT:jh_opengraphprotocol_2/Resources/Private/Language/locallang.xml:records.empty.fields.pages" arguments="{0: empty.pages_fieldscount, 1: empty.pages_recordscount}"/><br/>
+							<f:form.checkbox name="empty[pages_language_overlay]" checked="{empty.pages_language_overlay}" value="pages_language_overlay" /> <f:translate key="LLL:EXT:jh_opengraphprotocol_2/Resources/Private/Language/locallang.xml:records.empty.fields.pages_language_overlay" arguments="{0: empty.pages_language_overlay_fieldscount, 1: empty.pages_language_overlay_recordscount}"/>
+						</td>
+						<td><f:form.submit name="empty[doAction]" value="{f:translate(key:'LLL:EXT:jh_opengraphprotocol_2/Resources/Private/Language/locallang.xml:doAction.migrate')}" /></td>
+					</tr>
+					<tr class="t3-row-odd">
+						<td><f:translate key="LLL:EXT:jh_opengraphprotocol_2/Resources/Private/Language/locallang.xml:description.clear"/></td>
+						<td>
+							<f:form.checkbox name="clear[pages]" checked="{clear.pages}" value="pages" /> <f:translate key="LLL:EXT:jh_opengraphprotocol_2/Resources/Private/Language/locallang.xml:records.clear.pages" arguments="{0: clear.pages_count}"/><br/>
+							<f:form.checkbox name="clear[pages_language_overlay]" checked="{clear.pages_language_overlay}" value="pages_language_overlay" /> <f:translate key="LLL:EXT:jh_opengraphprotocol_2/Resources/Private/Language/locallang.xml:records.clear.pages_language_overlay" arguments="{0: clear.pages_language_overlay_count}"/>
+						</td>
+						<td><f:form.submit name="clear[doAction]" value="{f:translate(key:'LLL:EXT:jh_opengraphprotocol_2/Resources/Private/Language/locallang.xml:doAction.clear')}" /></td>
+					</tr>
+				</f:form>
+			</div>
+		</div>
+	</div>
+</div>
+
+</f:section>

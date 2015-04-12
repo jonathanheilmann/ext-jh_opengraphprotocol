@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2014-01-14T15:55:43Z" product-name="jh_opengraphprotocol_2">
+		<header/>
+		<body>
+
+			<trans-unit id="tx_jhopengraphprotocol2_domain_model_og">
+				<source>Open Graph protocol fields</source>
+			</trans-unit>
+			<trans-unit id="tx_jhopengraphprotocol2_domain_model_og.title">
+				<source>og:title</source>
+			</trans-unit>
+			<trans-unit id="tx_jhopengraphprotocol2_domain_model_og.type">
+				<source>og:type</source>
+			</trans-unit>
+			<trans-unit id="tx_jhopengraphprotocol2_domain_model_og.image">
+				<source>og:image</source>
+			</trans-unit>
+			<trans-unit id="tx_jhopengraphprotocol2_domain_model_og.sitename">
+				<source>og:sitename</source>
+			</trans-unit>
+			<trans-unit id="tx_jhopengraphprotocol2_domain_model_og.description">
+				<source>og:description</source>
+			</trans-unit>
+			
+		</body>
+	</file>
+</xliff>

@@ -1,0 +1,12 @@
+
+#cat=plugin.tx_jhopengraphprotocol/type/010; type=string; label=Type;
+plugin.tx_jhopengraphprotocol.type = website
+
+#cat=plugin.tx_jhopengraphprotocol/image/020; type=string; label=Image;
+plugin.tx_jhopengraphprotocol.image = EXT:jh_opengraphprotocol/Resources/Public/Images/nopic.jpg
+
+#cat=plugin.tx_jhopengraphprotocol/sitename/030; type=string; label=Sitename;
+plugin.tx_jhopengraphprotocol.sitename =
+
+#cat=plugin.tx_jhopengraphprotocol/description/040; type=string; label=Description;
+plugin.tx_jhopengraphprotocol.description =

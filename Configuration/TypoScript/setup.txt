@@ -1,0 +1,12 @@
+config.htmlTag_setParams := appendString(xmlns:og="http://ogp.me/ns#")
+
+includeLibs.tx_jhopengraphprotocol = EXT:jh_opengraphprotocol/Classes/Service/OgRendererService.php
+temp.tx_jhopengraphprotocol = USER
+temp.tx_jhopengraphprotocol {
+    userFunc = tx_jhopengraphprotocol_service_ogrenderer->main
+    type = {$plugin.tx_jhopengraphprotocol.type}
+    image = {$plugin.tx_jhopengraphprotocol.image}
+    sitename = {$plugin.tx_jhopengraphprotocol.sitename}
+    description = {$plugin.tx_jhopengraphprotocol.description}
+}
+page.669 < temp.tx_jhopengraphprotocol
