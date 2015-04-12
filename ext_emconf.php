@@ -12,7 +12,7 @@
 
 $EM_CONF[$_EXTKEY] = array (
 	'title' => 'Open Graph protocol',
-	'description' => 'Adds the Open Graph protocol properties in meta-tags to the html-header and supports multilanguage-websites.',
+	'description' => 'This Extension adds the Open Graph protocol properties in meta-tags to the html-header and supports multilanguage-websites.',
 	'category' => 'plugin',
 	'shy' => 0,
 	'version' => '1.1.0-dev',
