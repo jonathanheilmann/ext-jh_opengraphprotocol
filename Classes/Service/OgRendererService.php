@@ -31,6 +31,10 @@ use \TYPO3\CMS\Core\Utility\GeneralUtility;
 * @package    tx_jhopengraphprotocol
 */
 class tx_jhopengraphprotocol_service_ogrenderer {
+
+	/**
+	 * content Object
+	 */
 	var $cObj;
 
 	/**
@@ -69,6 +73,7 @@ class tx_jhopengraphprotocol_service_ogrenderer {
 		} else {
 			$og['type'] = $conf['type'];
 		}
+		$og['type'] = htmlentities($og['type']);
 
 		// Get image
 		if (!empty($this->cObj->data['tx_jhopengraphprotocol_ogimage'])) {
@@ -90,6 +95,7 @@ class tx_jhopengraphprotocol_service_ogrenderer {
 		} else {
 			$og['site_name'] = $GLOBALS['TSFE']->tmpl->setup['sitetitle'];
 		}
+		$og['site_name'] = htmlentities($og['site_name']);
 
 		// Get description
 		if (!empty($this->cObj->data['tx_jhopengraphprotocol_ogdescription'])) {
@@ -101,6 +107,7 @@ class tx_jhopengraphprotocol_service_ogrenderer {
 				$og['description'] = $conf['description'];
 			}
 		}
+		$og['description'] = htmlentities($og['description']);
 
 		// Get locale
 		$og['locale'] = $GLOBALS['TSFE']->tmpl->setup['config.']['locale_all'];
