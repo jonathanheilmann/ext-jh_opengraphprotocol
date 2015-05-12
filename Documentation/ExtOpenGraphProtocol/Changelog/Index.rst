@@ -28,6 +28,18 @@ ChangeLog
          Changes
 
  - :Version:
+         1.1.0
+
+   :Changes:
+         \* Removed support for TYPO3 CMS 4.5-6.1
+
+         \* Use namespace
+
+         \* Wrong local output (replace '-' by '_')
+
+         \* Add newline after each tag
+
+ - :Version:
          1.0.3
 
    :Changes:
