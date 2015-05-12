@@ -24,7 +24,7 @@ Language: en
 
 Keywords: Open Graph protocol, social network, facebook
 
-Copyright 2012-2014, Jonathan Heilmann, <mail@jonathan-heilmann.de>
+Copyright 2012-2015, Jonathan Heilmann, <mail@jonathan-heilmann.de>
 
 This document is published under the Open Content License
 
