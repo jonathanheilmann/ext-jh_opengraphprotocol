@@ -110,7 +110,7 @@ class tx_jhopengraphprotocol_service_ogrenderer {
 		$og['description'] = htmlentities($og['description']);
 
 		// Get locale
-		$og['locale'] = $GLOBALS['TSFE']->tmpl->setup['config.']['locale_all'];
+		$og['locale'] = str_replace('-', '_', $GLOBALS['TSFE']->tmpl->setup['config.']['locale_all']);
 
 		//add tags to html-header
 		$GLOBALS['TSFE']->additionalHeaderData[$extKey] = $this->renderHeaderLines($og);
