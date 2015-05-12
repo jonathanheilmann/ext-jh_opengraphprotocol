@@ -126,7 +126,7 @@ class tx_jhopengraphprotocol_service_ogrenderer {
 	 * @return	string
 	 */
 	private function renderHeaderLines($array) {
-		$res = '';
+		$res = array();
 		foreach ($array as $key => $value) {
 			if (!empty($value )) { // Skip empty values to prevent from empty og property
 				if (is_array($value)) {
@@ -135,7 +135,7 @@ class tx_jhopengraphprotocol_service_ogrenderer {
 						// A og property that accepts more than one value
 						foreach ($value as $multiPropertyValue) {
 							// Render each value to a new og property meta-tag
-							$res .= '<meta property="og:'.$key.'" content="'.$multiPropertyValue.'" />';
+							$res[] = '<meta property="og:'.$key.'" content="'.$multiPropertyValue.'" />';
 						}
 					} else {
 						// A og property with child-properties
@@ -143,11 +143,11 @@ class tx_jhopengraphprotocol_service_ogrenderer {
 					}
 				} else {
 					// A singe og property to be rendered
-					$res .= '<meta property="og:'.$key.'" content="'.$value.'" />';
+					$res[] = '<meta property="og:'.$key.'" content="'.$value.'" />';
 				}
 			}
 		}
-		return $res;
+		return implode(chr(10), $res);
 	}
 
 	/**
