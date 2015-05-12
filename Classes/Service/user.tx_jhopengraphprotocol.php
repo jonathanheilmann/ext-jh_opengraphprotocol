@@ -28,6 +28,10 @@
  * @subpackage    tx_jhopengraphprotocol
  */
 class user_jhopengraphprotocol {
+
+	/**
+	 * content Object
+	 */
 	var $cObj;
 
 	function main($content, $conf){
@@ -55,6 +59,7 @@ class user_jhopengraphprotocol {
 			    $title = $GLOBALS['TSFE']->page['title'];
 			}
 		}
+		$title = htmlentities($title);
 
 		//render type
 		if (!empty($this->cObj->data['tx_jhopengraphprotocol_ogtype'])) {
@@ -62,6 +67,7 @@ class user_jhopengraphprotocol {
 		} else {
 			$type = $conf['type'];
 		}
+		$type = htmlentities($type);
 
 		//render image
 		if (!empty($this->cObj->data['tx_jhopengraphprotocol_ogimage'])) {
@@ -80,6 +86,7 @@ class user_jhopengraphprotocol {
 		} else {
 			$sitename = $GLOBALS['TSFE']->tmpl->setup['sitetitle'];
 		}
+		$sitename = htmlentities($sitename);
 
 		//render description
 		if (!empty($this->cObj->data['tx_jhopengraphprotocol_ogdescription'])) {
@@ -93,6 +100,7 @@ class user_jhopengraphprotocol {
 				$description = $conf['description'];
 			}
 		}
+		$description = htmlentities($description);
 
 		//render output to html-header
 		if ($title != '') {$GLOBALS['TSFE']->additionalHeaderData[$extKey.'1'] = '<meta property="og:title" content="'.$title.'" />';}

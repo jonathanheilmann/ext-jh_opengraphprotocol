@@ -28,6 +28,14 @@ ChangeLog
          Changes
 
  - :Version:
+         1.0.3
+
+   :Changes:
+         \* Added htmlentities() to some more og-properties
+
+         \* Last version to support TYPO3 CMS 4.5-6.1
+
+ - :Version:
          1.0.2
 
    :Changes:
