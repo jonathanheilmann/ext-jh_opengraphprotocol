@@ -50,7 +50,7 @@ The content of each Open Graph property is taken by this priority:
          \
 
  - :property:
-         **title (template “Open Graph protocol v0.3.0”)**
+         **title**
 
    :first:
          local
@@ -122,7 +122,7 @@ The content of each Open Graph property is taken by this priority:
          \
 
  - :property:
-         **locale (NOT for template “Open Graph protocol v0.3.0”)**
+         **locale**
 
    :first:
          generated from config.locale\_all if available

@@ -20,7 +20,7 @@ EXT: Open Graph protocol
       2010-02-18 17:03:03
 
 :Changed:
-      2014-03-13 12:03:03
+      2015-05-12 20:52:03
 
 :Classification:
       jh_opengraphprotocol

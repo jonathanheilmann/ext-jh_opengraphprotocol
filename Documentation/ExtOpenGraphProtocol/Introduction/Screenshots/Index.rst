@@ -16,14 +16,7 @@
 Screenshots
 ^^^^^^^^^^^
 
-Constants-Editor for global settings in TYPO3 CMS 4.5 with template
-“Open Graph protocol v0.3.0”:
-
-.. figure:: ../../../Images/manual_html_c9a930b.png
-   :height: 436
-   :width: 555
-
-Constants-Editor for global settings in TYPO3 CMS 6.2 with template
+Constants-Editor for global settings in TYPO3 CMS 6.2 LTS with template
 “Open Graph protocol”:
 
 .. figure:: ../../../Images/manual_html_4c8522ac.png

@@ -25,5 +25,4 @@ Configuration
    :glob:
 
    Reference-Constants/Index
-   ReferenceConstantsV030/Index
 

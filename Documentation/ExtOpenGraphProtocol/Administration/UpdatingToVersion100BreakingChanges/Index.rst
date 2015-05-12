@@ -18,7 +18,13 @@
 Updating to version 1.0.0 – Breaking changes
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-With version 1.0.0 some changes has been done.To still provide the old
+.. important::
+
+	Since version 1.1.0 the template “Open Graph protocol v0.3.0”
+	is not providet anymore. When updating, please respect the
+	information below.
+
+With version 1.0.0 some changes has been done. To still provide the old
 behavior, functionalities and support TYPO3 CMS 4.5 the old code is
 available through the template “Open Graph protocol v0.3.0”.
 

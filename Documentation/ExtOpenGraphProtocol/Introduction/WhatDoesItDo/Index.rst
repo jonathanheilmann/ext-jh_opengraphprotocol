@@ -34,7 +34,7 @@ are supported:
 
 - description
 
-- locale (only with template “Open Graph protocol”)
+- locale
 
 For more information about the Open Graph protocol see:
 `https://developers.facebook.com/docs/opengraphprotocol/

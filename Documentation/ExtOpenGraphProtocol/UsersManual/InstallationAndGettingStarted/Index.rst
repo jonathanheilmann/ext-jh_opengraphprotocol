@@ -20,13 +20,7 @@ Installation and getting started
 
 - import and install the extension
 
-- include static template
-  
-  - For TYPO3 CMS installations version <= 4.7 use template “Open Graph
-    protocol v0.3.0”
-  
-  - For TYPO3 CMS installations at a version >= 6.0 use template “Open
-    Graph protocol”
+- include static template “Open Graph protocol”
     
     - When updating please see chapter “Administration” → “Updating to
       version x”
