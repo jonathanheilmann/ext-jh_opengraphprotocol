@@ -66,6 +66,7 @@ class tx_jhopengraphprotocol_service_ogrenderer {
 		} else {
 			$og['title'] = $GLOBALS['TSFE']->page['title'];
 		}
+		$og['title'] = htmlentities($og['title']);
 
 		// Get type
 		if (!empty($this->cObj->data['tx_jhopengraphprotocol_ogtype'])) {
