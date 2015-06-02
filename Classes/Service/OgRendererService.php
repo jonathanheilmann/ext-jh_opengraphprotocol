@@ -57,13 +57,28 @@ class tx_jhopengraphprotocol_service_ogrenderer {
 
 		//if there has been no return, get og properties and render output
 
+		// Get charset for htmlentities()
+		if (isset($GLOBALS['TSFE']->tmpl->setup['config.']['renderCharset']) && !empty($GLOBALS['TSFE']->tmpl->setup['config.']['renderCharset']) ) {
+			$charset = $GLOBALS['TSFE']->tmpl->setup['config.']['renderCharset'];
+		} else {
+			if (isset($GLOBALS['TSFE']->tmpl->setup['page.']['config.']['renderCharset']) && !empty($GLOBALS['TSFE']->tmpl->setup['page.']['config.']['renderCharset']) ) {
+				$charset = $GLOBALS['TSFE']->tmpl->setup['page.']['config.']['renderCharset'];
+			} else {
+				if (ini_get('default_charset') && !empty(ini_get('default_charset'))) {
+					$charset = ini_get('default_charset');
+				} else {
+					$charset = 'UTF-8';
+				}
+			}
+		}
+
 		// Get title
 		if (!empty($this->cObj->data['tx_jhopengraphprotocol_ogtitle'])) {
 			$og['title'] = $this->cObj->data['tx_jhopengraphprotocol_ogtitle'];
 		} else {
 			$og['title'] = $GLOBALS['TSFE']->page['title'];
 		}
-		$og['title'] = htmlentities($og['title']);
+		$og['title'] = htmlentities($og['title'], ENT_COMPAT | ENT_HTML401, $charset);
 
 		// Get type
 		if (!empty($this->cObj->data['tx_jhopengraphprotocol_ogtype'])) {
@@ -71,7 +86,7 @@ class tx_jhopengraphprotocol_service_ogrenderer {
 		} else {
 			$og['type'] = $conf['type'];
 		}
-		$og['type'] = htmlentities($og['type']);
+		$og['type'] = htmlentities($og['type'], ENT_COMPAT | ENT_HTML401, $charset);
 
 		// Get image
 		if (!empty($this->cObj->data['tx_jhopengraphprotocol_ogimage'])) {
@@ -93,7 +108,7 @@ class tx_jhopengraphprotocol_service_ogrenderer {
 		} else {
 			$og['site_name'] = $GLOBALS['TSFE']->tmpl->setup['sitetitle'];
 		}
-		$og['site_name'] = htmlentities($og['site_name']);
+		$og['site_name'] = htmlentities($og['site_name'], ENT_COMPAT | ENT_HTML401, $charset);
 
 		// Get description
 		if (!empty($this->cObj->data['tx_jhopengraphprotocol_ogdescription'])) {
@@ -105,7 +120,7 @@ class tx_jhopengraphprotocol_service_ogrenderer {
 				$og['description'] = $conf['description'];
 			}
 		}
-		$og['description'] = htmlentities($og['description']);
+		$og['description'] = htmlentities($og['description'], ENT_COMPAT | ENT_HTML401, $charset);
 
 		// Get locale
 		$og['locale'] = $GLOBALS['TSFE']->tmpl->setup['config.']['locale_all'];
