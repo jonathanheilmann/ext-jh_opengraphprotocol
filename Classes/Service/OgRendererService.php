@@ -84,6 +84,14 @@ class tx_jhopengraphprotocol_service_ogrenderer {
 			}
 		} else {
 			$fileName = $GLOBALS['TSFE']->tmpl->getFileName($conf['image']);
+			// check if an image is given in page --> media, if not use default image
+			$fileRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\FileRepository');
+			$fileObjects = $fileRepository->findByRelation('pages', 'media', $GLOBALS['TSFE']->id);
+			if (count($fileObjects)) {
+				$fileName = $fileObjects[0]->getPublicUrl();
+			} else {
+				$fileName = $GLOBALS['TSFE']->tmpl->getFileName($conf['image']);
+			}
 			$og['image'] = (!empty($fileName)) ? GeneralUtility::locationHeaderUrl($fileName) : $og['image'] = '';
 		}
 
