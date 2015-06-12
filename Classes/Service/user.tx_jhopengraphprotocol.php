@@ -49,21 +49,6 @@ class user_jhopengraphprotocol {
 
 		//if there has been no return, render output
 
-		// Get charset for htmlentities()
-		if (isset($GLOBALS['TSFE']->tmpl->setup['config.']['renderCharset']) && !empty($GLOBALS['TSFE']->tmpl->setup['config.']['renderCharset']) ) {
-			$charset = $GLOBALS['TSFE']->tmpl->setup['config.']['renderCharset'];
-		} else {
-			if (isset($GLOBALS['TSFE']->tmpl->setup['page.']['config.']['renderCharset']) && !empty($GLOBALS['TSFE']->tmpl->setup['page.']['config.']['renderCharset']) ) {
-				$charset = $GLOBALS['TSFE']->tmpl->setup['page.']['config.']['renderCharset'];
-			} else {
-				if (ini_get('default_charset') && !empty(ini_get('default_charset'))) {
-					$charset = ini_get('default_charset');
-				} else {
-					$charset = 'UTF-8';
-				}
-			}
-		}
-
 		//render title
 		if (!empty($this->cObj->data['tx_jhopengraphprotocol_ogtitle'])) {
 			$title = $this->cObj->data['tx_jhopengraphprotocol_ogtitle'];
@@ -74,7 +59,7 @@ class user_jhopengraphprotocol {
 			    $title = $GLOBALS['TSFE']->page['title'];
 			}
 		}
-		$title = htmlentities($title, ENT_COMPAT | ENT_HTML401, $charset);
+		$title = htmlentities($title);
 
 		//render type
 		if (!empty($this->cObj->data['tx_jhopengraphprotocol_ogtype'])) {
@@ -82,7 +67,7 @@ class user_jhopengraphprotocol {
 		} else {
 			$type = $conf['type'];
 		}
-		$type = htmlentities($type, ENT_COMPAT | ENT_HTML401, $charset);
+		$type = htmlentities($type);
 
 		//render image
 		if (!empty($this->cObj->data['tx_jhopengraphprotocol_ogimage'])) {
@@ -101,7 +86,7 @@ class user_jhopengraphprotocol {
 		} else {
 			$sitename = $GLOBALS['TSFE']->tmpl->setup['sitetitle'];
 		}
-		$sitename = htmlentities($sitename, ENT_COMPAT | ENT_HTML401, $charset);
+		$sitename = htmlentities($sitename);
 
 		//render description
 		if (!empty($this->cObj->data['tx_jhopengraphprotocol_ogdescription'])) {
@@ -115,7 +100,7 @@ class user_jhopengraphprotocol {
 				$description = $conf['description'];
 			}
 		}
-		$description = htmlentities($description, ENT_COMPAT | ENT_HTML401, $charset);
+		$description = htmlentities($description);
 
 		//render output to html-header
 		if ($title != '') {$GLOBALS['TSFE']->additionalHeaderData[$extKey.'1'] = '<meta property="og:title" content="'.$title.'" />';}
