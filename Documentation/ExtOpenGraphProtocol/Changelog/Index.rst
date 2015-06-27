@@ -33,6 +33,8 @@ ChangeLog
    :Changes:
          \* Fixed bug #66993 and #67231
 
+         \* Still support for TYPO3 CMS 4.5-6.1
+
  - :Version:
          1.0.3
 
