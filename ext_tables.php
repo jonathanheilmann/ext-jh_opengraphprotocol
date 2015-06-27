@@ -39,7 +39,7 @@ $tempColumns = array (
 	'tx_jhopengraphprotocol_ogfalimages' => array(
 		'exclude' => 1,
 		'label'	=> 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:pages.tx_jhopengraphprotocol_ogimage',
-        'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig(
+		'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig(
 			'tx_jhopengraphprotocol_ogfalimages',
 			array(
 				'appearance' => array(

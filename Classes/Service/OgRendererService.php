@@ -77,7 +77,7 @@ class tx_jhopengraphprotocol_service_ogrenderer {
 		$og['type'] = htmlentities($og['type']);
 
 		// Get image
-		$fileRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\FileRepository');
+		$fileRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\FileRepository');
 		$fileObjects = $fileRepository->findByRelation('pages', 'tx_jhopengraphprotocol_ogfalimages', $GLOBALS['TSFE']->id);
 		if (count($fileObjects)) {
 			foreach ($fileObjects as $key => $fileObject) {
