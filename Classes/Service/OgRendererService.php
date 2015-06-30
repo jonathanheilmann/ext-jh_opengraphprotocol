@@ -77,24 +77,26 @@ class tx_jhopengraphprotocol_service_ogrenderer {
 		$og['type'] = htmlentities($og['type']);
 
 		// Get image
-		if (!empty($this->cObj->data['tx_jhopengraphprotocol_ogimage'])) {
-			$images = explode(',', $this->cObj->data['tx_jhopengraphprotocol_ogimage']);
-			foreach ($images as $key => $image) {
-				$og['image'][$key] = GeneralUtility::locationHeaderUrl($GLOBALS['TSFE']->tmpl->getFileName('uploads/tx_jhopengraphprotocol/' . $image));
+		$fileRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\FileRepository');
+		$fileObjects = $fileRepository->findByRelation('pages', 'tx_jhopengraphprotocol_ogfalimages', $GLOBALS['TSFE']->id);
+		if (count($fileObjects)) {
+			foreach ($fileObjects as $key => $fileObject) {
+				$og['image'][] = GeneralUtility::locationHeaderUrl($fileObject->getPublicUrl());
 			}
 		} else {
-			$fileName = $GLOBALS['TSFE']->tmpl->getFileName($conf['image']);
 			// check if an image is given in page --> media, if not use default image
-			$fileRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\FileRepository');
 			$fileObjects = $fileRepository->findByRelation('pages', 'media', $GLOBALS['TSFE']->id);
 			if (count($fileObjects)) {
-				$fileName = $fileObjects[0]->getPublicUrl();
+				foreach ($fileObjects as $key => $fileObject) {
+					$og['image'][] = GeneralUtility::locationHeaderUrl($fileObject->getPublicUrl());
+				}
 			} else {
-				$fileName = $GLOBALS['TSFE']->tmpl->getFileName($conf['image']);
+				if (!empty($GLOBALS['TSFE']->tmpl->getFileName($conf['image']))) {
+					$og['image'][] = GeneralUtility::locationHeaderUrl($GLOBALS['TSFE']->tmpl->getFileName($conf['image']));
+				}
 			}
-			$og['image'] = (!empty($fileName)) ? GeneralUtility::locationHeaderUrl($fileName) : $og['image'] = '';
 		}
-
+		
 		// Get url
 		$og['url'] = htmlentities(GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL'));
 
