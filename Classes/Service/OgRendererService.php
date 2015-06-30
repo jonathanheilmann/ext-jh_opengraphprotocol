@@ -63,7 +63,7 @@ class tx_jhopengraphprotocol_service_ogrenderer {
 		} else {
 			$og['title'] = $GLOBALS['TSFE']->page['title'];
 		}
-		$og['title'] = htmlentities($og['title']);
+		$og['title'] = htmlspecialchars($og['title']);
 
 		// Get type
 		if (!empty($this->cObj->data['tx_jhopengraphprotocol_ogtype'])) {
@@ -71,7 +71,7 @@ class tx_jhopengraphprotocol_service_ogrenderer {
 		} else {
 			$og['type'] = $conf['type'];
 		}
-		$og['type'] = htmlentities($og['type']);
+		$og['type'] = htmlspecialchars($og['type']);
 
 		// Get image
 		if (!empty($this->cObj->data['tx_jhopengraphprotocol_ogimage'])) {
@@ -93,7 +93,7 @@ class tx_jhopengraphprotocol_service_ogrenderer {
 		} else {
 			$og['site_name'] = $GLOBALS['TSFE']->tmpl->setup['sitetitle'];
 		}
-		$og['site_name'] = htmlentities($og['site_name']);
+		$og['site_name'] = htmlspecialchars($og['site_name']);
 
 		// Get description
 		if (!empty($this->cObj->data['tx_jhopengraphprotocol_ogdescription'])) {
@@ -105,7 +105,7 @@ class tx_jhopengraphprotocol_service_ogrenderer {
 				$og['description'] = $conf['description'];
 			}
 		}
-		$og['description'] = htmlentities($og['description']);
+		$og['description'] = htmlspecialchars($og['description']);
 
 		// Get locale
 		$og['locale'] = $GLOBALS['TSFE']->tmpl->setup['config.']['locale_all'];
