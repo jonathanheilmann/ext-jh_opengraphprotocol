@@ -3,57 +3,60 @@
 .. --------------------------------------------------
 .. -*- coding: utf-8 -*- with BOM.
 
-.. ==================================================
-.. DEFINE SOME TEXTROLES
-.. --------------------------------------------------
-.. role::   underline
-.. role::   typoscript(code)
-.. role::   ts(typoscript)
-   :class:  typoscript
-.. role::   php(code)
+.. include:: Includes.txt
 
-========================
-EXT: Open Graph protocol
-========================
+.. _start:
 
-:Created:
-      2010-02-18 17:03:03
+===================
+Open Graph protocol
+===================
 
-:Changed:
-      2015-05-12 20:52:03
+.. only:: html
 
-:Classification:
-      jh_opengraphprotocol
+	:Classification:
+		jh_opengraphprotocol
 
-:Keywords:
-      Open Graph protocol, social network, facebook
+	:Version:
+		|release|
 
-:Author:
-      Jonathan Heilmann
+	:Language:
+		en
 
-:Email:
-      mail@jonathan-heilmann.de
+	:Description:
+		Adds the Open Graph protocol properties in meta-tags to the html-header and supports multilanguage-websites.
 
-:Info 4:
+	:Keywords:
+		Open Graph protocol, social network, facebook
 
+	:Copyright:
+		2012-2015
 
-:Language:
-      en
+	:Author:
+		Jonathan Heilmann
 
+	:Email:
+		mail@jonathan-heilmann.de
 
-.. figure:: Images/manual_html_22ebf792.gif
+	:License:
+		This document is published under the Open Content License
+		available from http://www.opencontent.org/opl.shtml
 
-.. figure:: Images/manual_html_3c9c2593.png
-   :height: 21
-   :width: 87
+	:Rendered:
+		|today|
 
-EXT: Open Graph protocol-jh\_opengraphprotocol
+	The content of this document is related to TYPO3,
+	a GNU/GPL CMS/Framework available from `www.typo3.org <http://www.typo3.org/>`_.
 
+	**Table of Contents**
 
 .. toctree::
-   :maxdepth: 5
-   :titlesonly:
-   :glob:
+	:maxdepth: 5
+	:titlesonly:
+	:glob:
 
-   ExtOpenGraphProtocol/Index
-
+   Introduction/Index
+   User/Index
+   Administrator/Index
+   Configuration/Index
+   ChangeLog/Index
+   Targets
