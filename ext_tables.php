@@ -36,6 +36,38 @@ $tempColumns = array (
             'maxitems' => 6,
         )
     ),
+	'tx_jhopengraphprotocol_ogfalimages' => array(
+		'exclude' => 1,
+		'label'	=> 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:pages.tx_jhopengraphprotocol_ogimage',
+		'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig(
+			'tx_jhopengraphprotocol_ogfalimages',
+			array(
+				'appearance' => array(
+					'enableControls' => array(
+						'sort' => TRUE,
+					),
+				),
+				'foreign_types' => array(
+					'0' => array(
+						'showitem' => '
+						--palette--;;opengraphprotocolPalette,
+						--palette--;;filePalette'
+					),
+					\TYPO3\CMS\Core\Resource\File::FILETYPE_IMAGE => array(
+						'showitem' => '
+						--palette--;;opengraphprotocolPalette,
+						--palette--;;filePalette'
+					),
+					\TYPO3\CMS\Core\Resource\File::FILETYPE_APPLICATION  => array(
+						'showitem' => '
+						--palette--;;opengraphprotocolPalette,
+						--palette--;;filePalette'
+					),
+				),
+			),
+        	$GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']
+		),
+	),
     'tx_jhopengraphprotocol_ogdescription' => array (
         'exclude' => 1,
         'label' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:pages.tx_jhopengraphprotocol_ogdescription',
@@ -48,20 +80,17 @@ $tempColumns = array (
 );
 
 // Add columns to TCA of pages and pages_language_overlay
-t3lib_extMgm::addTCAcolumns('pages',$tempColumns,1);
-t3lib_extMgm::addToAllTCAtypes('pages','--div--;LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:pages.tab_title,tx_jhopengraphprotocol_ogtitle;;;;1-1-1, tx_jhopengraphprotocol_ogtype, tx_jhopengraphprotocol_ogimage, tx_jhopengraphprotocol_ogdescription');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('pages',$tempColumns,1);
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('pages','--div--;LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:pages.tab_title,tx_jhopengraphprotocol_ogtitle;;;;1-1-1, tx_jhopengraphprotocol_ogtype, tx_jhopengraphprotocol_ogimage, tx_jhopengraphprotocol_ogfalimages, tx_jhopengraphprotocol_ogdescription');
 
-t3lib_extMgm::addTCAcolumns('pages_language_overlay',$tempColumns,1);
-t3lib_extMgm::addToAllTCAtypes('pages_language_overlay','--div--;LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:pages.tab_title,tx_jhopengraphprotocol_ogtitle;;;;1-1-1, tx_jhopengraphprotocol_ogtype, tx_jhopengraphprotocol_ogimage, tx_jhopengraphprotocol_ogdescription');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('pages_language_overlay',$tempColumns,1);
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('pages_language_overlay','--div--;LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:pages.tab_title,tx_jhopengraphprotocol_ogtitle;;;;1-1-1, tx_jhopengraphprotocol_ogtype, tx_jhopengraphprotocol_ogimage, tx_jhopengraphprotocol_ogfalimages, tx_jhopengraphprotocol_ogdescription');
 
 // Add static file
-if (version_compare(TYPO3_branch, '6.0', '>=')) {
-	// Add new static file for TYPO3 CMS >= 6.0
-	t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript', 'Open Graph protocol');
-}
-if (version_compare(TYPO3_branch, '6.1', '<=')) {
-	// Add old static file to stay compatible to TYPO3 CMS 4.5
-	t3lib_extMgm::addStaticFile($_EXTKEY, 'static/', 'Open Graph protocol v0.3.0');
-}
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript', 'Open Graph protocol');
+
+// Add new palette
+$GLOBALS['TCA']['sys_file_reference']['palettes']['opengraphprotocolPalette'] = $GLOBALS['TCA']['sys_file_reference']['palettes']['basicoverlayPalette'];
+$GLOBALS['TCA']['sys_file_reference']['palettes']['opengraphprotocolPalette']['showitem'] = '';
 
 ?>

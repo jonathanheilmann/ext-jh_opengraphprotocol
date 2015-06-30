@@ -1,22 +1,23 @@
-﻿
-
 .. ==================================================
 .. FOR YOUR INFORMATION
 .. --------------------------------------------------
 .. -*- coding: utf-8 -*- with BOM.
 
-.. ==================================================
-.. DEFINE SOME TEXTROLES
-.. --------------------------------------------------
-.. role::   underline
-.. role::   typoscript(code)
-.. role::   ts(typoscript)
-   :class:  typoscript
-.. role::   php(code)
+.. include:: ../Includes.txt
 
 
-Reference – Constants v0.3.0
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. _configuration-reference:
+
+Configuration Reference
+=======================
+
+.. _configuration-reference-typoscript:
+
+TypoScript Reference
+--------------------
+
+Constants
+^^^^^^^^^
 
 .. ### BEGIN~OF~TABLE ###
 
@@ -33,22 +34,6 @@ Reference – Constants v0.3.0
 
    Default
          Default:
-
-
-.. container:: table-row
-
-   Property
-         title
-
-   Data type
-         string
-
-   Description
-         Default title (recommended to set local on each page or leave both
-         empty to use the page-title)
-
-   Default
-         \
 
 
 .. container:: table-row
@@ -78,6 +63,7 @@ Reference – Constants v0.3.0
          Default image that should be shown as thumbnail
 
    Default
+         \
          EXT:jh\_opengraphprotocol/Resources/Public/Images/nopic.jpg
 
 
@@ -113,5 +99,4 @@ Reference – Constants v0.3.0
 
 .. ###### END~OF~TABLE ######
 
-[tsref:plugin.jh\_opengraphprotocol]
-
+[tsref:plugin.tx\_jhopengraphprotocol]
