@@ -53,10 +53,10 @@ The content of each Open Graph property is taken by this priority:
          local
 
    :second:
-         global
+         page-media
 
    :third:
-         \
+         global
 
  - :property:
          **site\_name**
