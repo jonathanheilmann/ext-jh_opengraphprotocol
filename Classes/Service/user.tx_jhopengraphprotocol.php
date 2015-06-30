@@ -59,7 +59,7 @@ class user_jhopengraphprotocol {
 			    $title = $GLOBALS['TSFE']->page['title'];
 			}
 		}
-		$title = htmlentities($title);
+		$title = htmlspecialchars($title);
 
 		//render type
 		if (!empty($this->cObj->data['tx_jhopengraphprotocol_ogtype'])) {
@@ -67,7 +67,7 @@ class user_jhopengraphprotocol {
 		} else {
 			$type = $conf['type'];
 		}
-		$type = htmlentities($type);
+		$type = htmlspecialchars($type);
 
 		//render image
 		if (!empty($this->cObj->data['tx_jhopengraphprotocol_ogimage'])) {
@@ -86,7 +86,7 @@ class user_jhopengraphprotocol {
 		} else {
 			$sitename = $GLOBALS['TSFE']->tmpl->setup['sitetitle'];
 		}
-		$sitename = htmlentities($sitename);
+		$sitename = htmlspecialchars($sitename);
 
 		//render description
 		if (!empty($this->cObj->data['tx_jhopengraphprotocol_ogdescription'])) {
@@ -100,7 +100,7 @@ class user_jhopengraphprotocol {
 				$description = $conf['description'];
 			}
 		}
-		$description = htmlentities($description);
+		$description = htmlspecialchars($description);
 
 		//render output to html-header
 		if ($title != '') {$GLOBALS['TSFE']->additionalHeaderData[$extKey.'1'] = '<meta property="og:title" content="'.$title.'" />';}
