@@ -1,22 +1,19 @@
-﻿
-
 .. ==================================================
 .. FOR YOUR INFORMATION
 .. --------------------------------------------------
 .. -*- coding: utf-8 -*- with BOM.
 
-.. ==================================================
-.. DEFINE SOME TEXTROLES
-.. --------------------------------------------------
-.. role::   underline
-.. role::   typoscript(code)
-.. role::   ts(typoscript)
-   :class:  typoscript
-.. role::   php(code)
+.. include:: ../Includes.txt
 
+.. _user-manual:
+
+User Manual
+===========
+
+.. _user-operatingInstructions:
 
 Operating Instructions
-^^^^^^^^^^^^^^^^^^^^^^
+----------------------
 
 The content of each Open Graph property is taken by this priority:
 
@@ -45,30 +42,6 @@ The content of each Open Graph property is taken by this priority:
 
    :second:
          page-title
-
-   :third:
-         \
-
- - :property:
-         **title**
-
-   :first:
-         local
-
-   :second:
-         global
-
-   :third:
-         page-title
-
- - :property:
-         **type**
-
-   :first:
-         local
-
-   :second:
-         global
 
    :third:
          \
@@ -140,4 +113,3 @@ For example the extension tries to render the image-property:If there
 is no image defined local within the page-properties, if tries to
 fetch a image from the global TypoScript Settings. If there is no
 image, too, no image property will be rendered.
-
