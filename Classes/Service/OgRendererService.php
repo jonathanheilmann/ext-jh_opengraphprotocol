@@ -1,5 +1,5 @@
 <?php
-namespace Heilmann\JhOpengraphprotocol\Service\;
+namespace Heilmann\JhOpengraphprotocol\Service;
 
 /***************************************************************
 *  Copyright notice
@@ -30,7 +30,7 @@ use \TYPO3\CMS\Core\Utility\GeneralUtility;
 * @author    Jonathan Heilmann <mail@jonathan-heilmann.de>
 * @package    tx_jhopengraphprotocol
 */
-class tx_jhopengraphprotocol_service_ogrenderer {
+class OgRendererService {
 
 	/**
 	 * content Object
