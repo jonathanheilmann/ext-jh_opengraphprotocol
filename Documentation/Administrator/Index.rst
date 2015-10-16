@@ -70,14 +70,14 @@ To migrate existing relations follow these steps:
       
 .. _admin-updating-toVersion100:
 
-To version 1.0.0 – Breaking changes
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 .. important::
 
    Since version 1.1.0 the template “Open Graph protocol v0.3.0”
-   is not provided anymore. Please respect the breaking changes
+   is not provided anymore. Please respect 1.0.0 breaking changes
    below, when updating.
+
+To version 1.0.0 – Breaking changes
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    
 With version 1.0.0 some changes has been done. To still provide the old
 behavior, functionalities and support TYPO3 CMS 4.5 the old code is

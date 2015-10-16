@@ -30,7 +30,7 @@ ChangeLog
 
          \* Use namespace
 
-         \* Wrong local output (replace '-' by '_')
+         \* Wrong local output (replace '-' by '_', remove charset)
 
          \* Add newline after each tag
 
