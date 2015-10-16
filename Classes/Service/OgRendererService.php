@@ -121,7 +121,10 @@ class OgRendererService {
 		$og['description'] = htmlspecialchars($og['description']);
 
 		// Get locale
-		$og['locale'] = str_replace('-', '_', $GLOBALS['TSFE']->tmpl->setup['config.']['locale_all']);
+		$localeParts = explode('.', $GLOBALS['TSFE']->tmpl->setup['config.']['locale_all']);
+		if (isset($localeParts[0])) {
+			$og['locale'] = str_replace('-', '_', $localeParts[0]);
+		}
 
 		//add tags to html-header
 		$GLOBALS['TSFE']->additionalHeaderData[$extKey] = $this->renderHeaderLines($og);
