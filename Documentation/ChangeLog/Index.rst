@@ -28,13 +28,15 @@ ChangeLog
    :Changes:
          \* Removed support for TYPO3 CMS 4.5-6.1
 
-         \* Use namespace
+         \* Added support for TYPO3 CMS 7.x
+
+         \* Use FAL for image-relations (Please see :ref:`admin-updating-toversion110` for updating)
 
          \* Wrong local output (replace '-' by '_', remove charset)
 
          \* Add newline after each tag
 
-         \* Use FAL for image-relations (Please see :ref:`admin-updating-toversion110` for updating)
+         \* Rewritten documentation
 
  - :Version:
          1.0.4
