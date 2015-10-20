@@ -3,18 +3,13 @@
 .. --------------------------------------------------
 .. -*- coding: utf-8 -*- with BOM.
 
-.. ==================================================
-.. DEFINE SOME TEXTROLES
-.. --------------------------------------------------
-.. role::   underline
-.. role::   typoscript(code)
-.. role::   ts(typoscript)
-   :class:  typoscript
-.. role::   php(code)
+.. include:: ../Includes.txt
 
+
+.. _changelog:
 
 ChangeLog
----------
+=========
 
 .. ### BEGIN~OF~TABLE ###
 
@@ -26,6 +21,30 @@ ChangeLog
 
    :Changes:
          Changes
+
+ - :Version:
+         1.1.0
+
+   :Changes:
+         \* Removed support for TYPO3 CMS 4.5-6.1
+
+         \* Added support for TYPO3 CMS 7.x
+
+         \* Use FAL for image-relations (Please see :ref:`admin-updating-toversion110` for updating)
+
+         \* Wrong local output (replace '-' by '_', remove charset)
+
+         \* Add newline after each tag
+
+         \* Rewritten documentation
+
+ - :Version:
+         1.0.4
+
+   :Changes:
+         \* Fixed TYPO3 forge bug #66993 and #67231
+
+         \* Still support for TYPO3 CMS 4.5-6.1
 
  - :Version:
          1.0.3
@@ -187,5 +206,3 @@ ChangeLog
 
 
 .. ###### END~OF~TABLE ######
-
-

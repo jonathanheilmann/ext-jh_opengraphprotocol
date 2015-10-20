@@ -1,8 +1,10 @@
 <?php
+namespace Heilmann\JhOpengraphprotocol\Service;
+
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2014 Jonathan Heilmann <mail@jonathan-heilmann.de>
+*  (c) 2014-2015 Jonathan Heilmann <mail@jonathan-heilmann.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -22,12 +24,13 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use \TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
 * @author    Jonathan Heilmann <mail@jonathan-heilmann.de>
-* @package    TYPO3
-* @subpackage    tx_jhopengraphprotocol2
+* @package    tx_jhopengraphprotocol
 */
-class tx_jhopengraphprotocol_service_ogrenderer {
+class OgRendererService {
 
 	/**
 	 * content Object
@@ -49,7 +52,7 @@ class tx_jhopengraphprotocol_service_ogrenderer {
 		// 2013-04-22	kraftb@webconsulting.at
 		// Check if the tt_news "displaySingle" method has been called before
 		if(class_exists('tx_jhopengraphttnews_displaySingleHook')) {
-			$hookObject = t3lib_div::makeInstance('tx_jhopengraphttnews_displaySingleHook');
+			$hookObject = GeneralUtility::makeInstance('tx_jhopengraphttnews_displaySingleHook');
 			if ($hookObject->singleViewDisplayed()) {
 				return $content;
 			}
@@ -63,7 +66,7 @@ class tx_jhopengraphprotocol_service_ogrenderer {
 		} else {
 			$og['title'] = $GLOBALS['TSFE']->page['title'];
 		}
-		$og['title'] = htmlentities($og['title']);
+		$og['title'] = htmlspecialchars($og['title']);
 
 		// Get type
 		if (!empty($this->cObj->data['tx_jhopengraphprotocol_ogtype'])) {
@@ -71,21 +74,31 @@ class tx_jhopengraphprotocol_service_ogrenderer {
 		} else {
 			$og['type'] = $conf['type'];
 		}
-		$og['type'] = htmlentities($og['type']);
+		$og['type'] = htmlspecialchars($og['type']);
 
 		// Get image
-		if (!empty($this->cObj->data['tx_jhopengraphprotocol_ogimage'])) {
-			$images = explode(',', $this->cObj->data['tx_jhopengraphprotocol_ogimage']);
-			foreach ($images as $key => $image) {
-				$og['image'][$key] = t3lib_div::locationHeaderUrl($GLOBALS['TSFE']->tmpl->getFileName('uploads/tx_jhopengraphprotocol/' . $image));
+		$fileRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\FileRepository');
+		$fileObjects = $fileRepository->findByRelation('pages', 'tx_jhopengraphprotocol_ogfalimages', $GLOBALS['TSFE']->id);
+		if (count($fileObjects)) {
+			foreach ($fileObjects as $key => $fileObject) {
+				$og['image'][] = GeneralUtility::locationHeaderUrl($fileObject->getPublicUrl());
 			}
 		} else {
-			$fileName = $GLOBALS['TSFE']->tmpl->getFileName($conf['image']);
-			$og['image'] = (!empty($fileName)) ? t3lib_div::locationHeaderUrl($fileName) : $og['image'] = '';
+			// check if an image is given in page --> media, if not use default image
+			$fileObjects = $fileRepository->findByRelation('pages', 'media', $GLOBALS['TSFE']->id);
+			if (count($fileObjects)) {
+				foreach ($fileObjects as $key => $fileObject) {
+					$og['image'][] = GeneralUtility::locationHeaderUrl($fileObject->getPublicUrl());
+				}
+			} else {
+				if (!empty($GLOBALS['TSFE']->tmpl->getFileName($conf['image']))) {
+					$og['image'][] = GeneralUtility::locationHeaderUrl($GLOBALS['TSFE']->tmpl->getFileName($conf['image']));
+				}
+			}
 		}
-
+		
 		// Get url
-		$og['url'] = htmlentities(t3lib_div::getIndpEnv('TYPO3_REQUEST_URL'));
+		$og['url'] = htmlentities(GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL'));
 
 		// Get site_name
 		if (!empty($conf['sitename'])) {
@@ -93,7 +106,7 @@ class tx_jhopengraphprotocol_service_ogrenderer {
 		} else {
 			$og['site_name'] = $GLOBALS['TSFE']->tmpl->setup['sitetitle'];
 		}
-		$og['site_name'] = htmlentities($og['site_name']);
+		$og['site_name'] = htmlspecialchars($og['site_name']);
 
 		// Get description
 		if (!empty($this->cObj->data['tx_jhopengraphprotocol_ogdescription'])) {
@@ -105,10 +118,13 @@ class tx_jhopengraphprotocol_service_ogrenderer {
 				$og['description'] = $conf['description'];
 			}
 		}
-		$og['description'] = htmlentities($og['description']);
+		$og['description'] = htmlspecialchars($og['description']);
 
 		// Get locale
-		$og['locale'] = $GLOBALS['TSFE']->tmpl->setup['config.']['locale_all'];
+		$localeParts = explode('.', $GLOBALS['TSFE']->tmpl->setup['config.']['locale_all']);
+		if (isset($localeParts[0])) {
+			$og['locale'] = str_replace('-', '_', $localeParts[0]);
+		}
 
 		//add tags to html-header
 		$GLOBALS['TSFE']->additionalHeaderData[$extKey] = $this->renderHeaderLines($og);
@@ -123,7 +139,7 @@ class tx_jhopengraphprotocol_service_ogrenderer {
 	 * @return	string
 	 */
 	private function renderHeaderLines($array) {
-		$res = '';
+		$res = array();
 		foreach ($array as $key => $value) {
 			if (!empty($value )) { // Skip empty values to prevent from empty og property
 				if (is_array($value)) {
@@ -132,7 +148,7 @@ class tx_jhopengraphprotocol_service_ogrenderer {
 						// A og property that accepts more than one value
 						foreach ($value as $multiPropertyValue) {
 							// Render each value to a new og property meta-tag
-							$res .= '<meta property="og:'.$key.'" content="'.$multiPropertyValue.'" />';
+							$res[] = '<meta property="og:'.$key.'" content="'.$multiPropertyValue.'" />';
 						}
 					} else {
 						// A og property with child-properties
@@ -140,11 +156,11 @@ class tx_jhopengraphprotocol_service_ogrenderer {
 					}
 				} else {
 					// A singe og property to be rendered
-					$res .= '<meta property="og:'.$key.'" content="'.$value.'" />';
+					$res[] = '<meta property="og:'.$key.'" content="'.$value.'" />';
 				}
 			}
 		}
-		return $res;
+		return implode(chr(10), $res);
 	}
 
 	/**

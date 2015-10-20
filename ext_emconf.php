@@ -12,20 +12,20 @@
 
 $EM_CONF[$_EXTKEY] = array (
 	'title' => 'Open Graph protocol',
-	'description' => 'Adds the Open Graph protocol properties in meta-tags to the html-header and supports multilanguage-websites.',
+	'description' => 'This Extension adds the Open Graph protocol properties in meta-tags to the html-header and supports multilanguage-websites.',
 	'category' => 'plugin',
 	'shy' => 0,
-	'version' => '1.0.3',
+	'version' => '1.1.0',
 	'dependencies' => '',
 	'conflicts' => '',
 	'priority' => '',
 	'loadOrder' => '',
 	'module' => '',
 	'state' => 'stable',
-	'uploadfolder' => 1,
+	'uploadfolder' => 0,
 	'createDirs' => '',
 	'modify_tables' => '',
-	'clearcacheonload' => 0,
+	'clearcacheonload' => 1,
 	'lockType' => '',
 	'author' => 'Jonathan Heilmann',
 	'author_email' => 'mail@jonathan-heilmann.de',
@@ -36,7 +36,7 @@ $EM_CONF[$_EXTKEY] = array (
 	array (
 		'depends' =>
 		array (
-			'typo3' => '4.5.0-6.2.99',
+			'typo3' => '6.2.0-7.6.99',
 		),
 		'conflicts' =>
 		array (
