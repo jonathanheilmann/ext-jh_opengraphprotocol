@@ -93,7 +93,7 @@ class OgRendererService {
 			} else {
 				$imageFileName = $GLOBALS['TSFE']->tmpl->getFileName($conf['image']);
 				if (!empty($imageFileName)) {
-					$og['image'][] = GeneralUtility::locationHeaderUrl($GLOBALS['TSFE']->tmpl->getFileName($conf['image']));
+					$og['image'][] = GeneralUtility::locationHeaderUrl($imageFileName);
 				}
 			}
 		}
