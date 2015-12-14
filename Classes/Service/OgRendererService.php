@@ -148,15 +148,22 @@ class OgRendererService {
 						// A og property that accepts more than one value
 						foreach ($value as $multiPropertyValue) {
 							// Render each value to a new og property meta-tag
-							$res[] = '<meta property="og:'.$key.'" content="'.$multiPropertyValue.'" />';
+							$res[] = $this->buildProperty($key, $multiPropertyValue);
+							// Add image details
+							if($key == 'image') {
+								$imgSize = getimagesize($multiPropertyValue);
+								$res[] = $this->buildProperty($key . ':type', $imgSize['mime']);
+								$res[] = $this->buildProperty($key . ':width', $imgSize[0]);
+								$res[] = $this->buildProperty($key . ':height', $imgSize[1]);
+							}
 						}
 					} else {
 						// A og property with child-properties
 						$res .= $this->renderHeaderLines($this->remapArray($key, $value));
 					}
 				} else {
-					// A singe og property to be rendered
-					$res[] = '<meta property="og:'.$key.'" content="'.$value.'" />';
+					// A single og property to be rendered
+					$res[] = $this->buildProperty($key, $value);
 				}
 			}
 		}
@@ -177,6 +184,17 @@ class OgRendererService {
 		}
 
 		return $res;
+	}
+	
+	/**
+	 * Build meta property tag
+	 *
+	 * @param	string	$key
+	 * @param	string	$value
+	 * @return	string
+	 */
+	private function buildProperty($key, $value) {
+		return '<meta property="og:' . $key . '" content="' . $value . '" />';
 	}
 }
 ?>
