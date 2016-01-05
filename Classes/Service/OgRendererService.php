@@ -4,7 +4,7 @@ namespace Heilmann\JhOpengraphprotocol\Service;
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2014-2015 Jonathan Heilmann <mail@jonathan-heilmann.de>
+*  (c) 2014-2016 Jonathan Heilmann <mail@jonathan-heilmann.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -30,153 +30,160 @@ use \TYPO3\CMS\Core\Utility\GeneralUtility;
 * @author    Jonathan Heilmann <mail@jonathan-heilmann.de>
 * @package    tx_jhopengraphprotocol
 */
-class OgRendererService {
+class OgRendererService
+{
 
-	/**
-	 * content Object
-	 */
-	var $cObj;
+    /**
+     * content Object
+     */
+    public $cObj;
 
-	/**
-	 * Main-function to render the Open Grapg protocol content.
-	 *
-	 * @param	string	$content
-	 * @param	array		$conf
-	 * @return	string
-	 */
-	public function main($content, $conf){
-		$extKey = 'tx_jhopengraphprotocol';
-		$content = '';
-		$og = array();
+    /**
+     * Main-function to render the Open Graph protocol content.
+     *
+     * @param	string	$content
+     * @param	array		$conf
+     * @return	string
+     */
+    public function main($content, $conf)
+    {
+        $extKey = 'tx_jhopengraphprotocol';
+        $content = '';
+        $og = array();
 
-		// 2013-04-22	kraftb@webconsulting.at
-		// Check if the tt_news "displaySingle" method has been called before
-		if(class_exists('tx_jhopengraphttnews_displaySingleHook')) {
-			$hookObject = GeneralUtility::makeInstance('tx_jhopengraphttnews_displaySingleHook');
-			if ($hookObject->singleViewDisplayed()) {
-				return $content;
-			}
-		}
+        // 2013-04-22	kraftb@webconsulting.at
+        // Check if the tt_news "displaySingle" method has been called before
+        if (class_exists('tx_jhopengraphttnews_displaySingleHook')) {
+            $hookObject = GeneralUtility::makeInstance('tx_jhopengraphttnews_displaySingleHook');
+            if ($hookObject->singleViewDisplayed()) {
+                return $content;
+            }
+        }
 
-		//if there has been no return, get og properties and render output
+        //if there has been no return, get og properties and render output
 
-		// Get title
-		if (!empty($this->cObj->data['tx_jhopengraphprotocol_ogtitle'])) {
-			$og['title'] = $this->cObj->data['tx_jhopengraphprotocol_ogtitle'];
-		} else {
-			$og['title'] = $GLOBALS['TSFE']->page['title'];
-		}
-		$og['title'] = htmlspecialchars($og['title']);
+        // Get title
+        if (!empty($this->cObj->data['tx_jhopengraphprotocol_ogtitle'])) {
+            $og['title'] = $this->cObj->data['tx_jhopengraphprotocol_ogtitle'];
+        } else {
+            $og['title'] = $GLOBALS['TSFE']->page['title'];
+        }
+        $og['title'] = htmlspecialchars($og['title']);
 
-		// Get type
-		if (!empty($this->cObj->data['tx_jhopengraphprotocol_ogtype'])) {
-			$og['type'] = $this->cObj->data['tx_jhopengraphprotocol_ogtype'];
-		} else {
-			$og['type'] = $conf['type'];
-		}
-		$og['type'] = htmlspecialchars($og['type']);
+        // Get type
+        if (!empty($this->cObj->data['tx_jhopengraphprotocol_ogtype'])) {
+            $og['type'] = $this->cObj->data['tx_jhopengraphprotocol_ogtype'];
+        } else {
+            $og['type'] = $conf['type'];
+        }
+        $og['type'] = htmlspecialchars($og['type']);
 
-		// Get image
-		$fileRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\FileRepository');
-		$fileObjects = $fileRepository->findByRelation('pages', 'tx_jhopengraphprotocol_ogfalimages', $GLOBALS['TSFE']->id);
-		if (count($fileObjects)) {
-			foreach ($fileObjects as $key => $fileObject) {
-				$og['image'][] = GeneralUtility::locationHeaderUrl($fileObject->getPublicUrl());
-			}
-		} else {
-			// check if an image is given in page --> media, if not use default image
-			$fileObjects = $fileRepository->findByRelation('pages', 'media', $GLOBALS['TSFE']->id);
-			if (count($fileObjects)) {
-				foreach ($fileObjects as $key => $fileObject) {
-					$og['image'][] = GeneralUtility::locationHeaderUrl($fileObject->getPublicUrl());
-				}
-			} else {
-				if (!empty($GLOBALS['TSFE']->tmpl->getFileName($conf['image']))) {
-					$og['image'][] = GeneralUtility::locationHeaderUrl($GLOBALS['TSFE']->tmpl->getFileName($conf['image']));
-				}
-			}
-		}
-		
-		// Get url
-		$og['url'] = htmlentities(GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL'));
+        // Get image
+        /** @var \TYPO3\CMS\Core\Resource\FileRepository $fileRepository */
+        $fileRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\FileRepository');
+        $fileObjects = $fileRepository->findByRelation('pages', 'tx_jhopengraphprotocol_ogfalimages', $GLOBALS['TSFE']->id);
+        if (count($fileObjects)) {
+            foreach ($fileObjects as $key => $fileObject) {
+                /** @var \TYPO3\CMS\Core\Resource\File $fileObject */
+                $og['image'][] = GeneralUtility::locationHeaderUrl($fileObject->getPublicUrl());
+            }
+        } else {
+            // check if an image is given in page --> media, if not use default image
+            $fileObjects = $fileRepository->findByRelation('pages', 'media', $GLOBALS['TSFE']->id);
+            if (count($fileObjects)) {
+                foreach ($fileObjects as $key => $fileObject) {
+                    /** @var \TYPO3\CMS\Core\Resource\File $fileObject */
+                    $og['image'][] = GeneralUtility::locationHeaderUrl($fileObject->getPublicUrl());
+                }
+            } else {
+                $imageFileName = $GLOBALS['TSFE']->tmpl->getFileName($conf['image']);
+                if (!empty($imageFileName)) {
+                    $og['image'][] = GeneralUtility::locationHeaderUrl($imageFileName);
+                }
+            }
+        }
+        
+        // Get url
+        $og['url'] = htmlentities(GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL'));
 
-		// Get site_name
-		if (!empty($conf['sitename'])) {
-			$og['site_name'] = $conf['sitename'];
-		} else {
-			$og['site_name'] = $GLOBALS['TSFE']->tmpl->setup['sitetitle'];
-		}
-		$og['site_name'] = htmlspecialchars($og['site_name']);
+        // Get site_name
+        if (!empty($conf['sitename'])) {
+            $og['site_name'] = $conf['sitename'];
+        } else {
+            $og['site_name'] = $GLOBALS['TSFE']->tmpl->setup['sitetitle'];
+        }
+        $og['site_name'] = htmlspecialchars($og['site_name']);
 
-		// Get description
-		if (!empty($this->cObj->data['tx_jhopengraphprotocol_ogdescription'])) {
-			$og['description'] = $this->cObj->data['tx_jhopengraphprotocol_ogdescription'];
-		} else {
-			if (!empty($GLOBALS['TSFE']->page['description'])) {
-				$og['description'] = $GLOBALS['TSFE']->page['description'];
-			} else {
-				$og['description'] = $conf['description'];
-			}
-		}
-		$og['description'] = htmlspecialchars($og['description']);
+        // Get description
+        if (!empty($this->cObj->data['tx_jhopengraphprotocol_ogdescription'])) {
+            $og['description'] = $this->cObj->data['tx_jhopengraphprotocol_ogdescription'];
+        } else {
+            if (!empty($GLOBALS['TSFE']->page['description'])) {
+                $og['description'] = $GLOBALS['TSFE']->page['description'];
+            } else {
+                $og['description'] = $conf['description'];
+            }
+        }
+        $og['description'] = htmlspecialchars($og['description']);
 
-		// Get locale
-		$localeParts = explode('.', $GLOBALS['TSFE']->tmpl->setup['config.']['locale_all']);
-		if (isset($localeParts[0])) {
-			$og['locale'] = str_replace('-', '_', $localeParts[0]);
-		}
+        // Get locale
+        $localeParts = explode('.', $GLOBALS['TSFE']->tmpl->setup['config.']['locale_all']);
+        if (isset($localeParts[0])) {
+            $og['locale'] = str_replace('-', '_', $localeParts[0]);
+        }
 
-		//add tags to html-header
-		$GLOBALS['TSFE']->additionalHeaderData[$extKey] = $this->renderHeaderLines($og);
+        //add tags to html-header
+        $GLOBALS['TSFE']->additionalHeaderData[$extKey] = $this->renderHeaderLines($og);
 
-		return $content;
-	}
+        return $content;
+    }
 
-	/**
-	 * Render the header lines to be added from array
-	 *
-	 * @param	array		$array
-	 * @return	string
-	 */
-	private function renderHeaderLines($array) {
-		$res = array();
-		foreach ($array as $key => $value) {
-			if (!empty($value )) { // Skip empty values to prevent from empty og property
-				if (is_array($value)) {
-					// A op property with multiple values or child-properties
-					if(array_key_exists('0', $value)) {
-						// A og property that accepts more than one value
-						foreach ($value as $multiPropertyValue) {
-							// Render each value to a new og property meta-tag
-							$res[] = '<meta property="og:'.$key.'" content="'.$multiPropertyValue.'" />';
-						}
-					} else {
-						// A og property with child-properties
-						$res .= $this->renderHeaderLines($this->remapArray($key, $value));
-					}
-				} else {
-					// A singe og property to be rendered
-					$res[] = '<meta property="og:'.$key.'" content="'.$value.'" />';
-				}
-			}
-		}
-		return implode(chr(10), $res);
-	}
+    /**
+     * Render the header lines to be added from array
+     *
+     * @param	array		$array
+     * @return	string
+     */
+    private function renderHeaderLines($array)
+    {
+        $res = array();
+        foreach ($array as $key => $value) {
+            if (!empty($value)) { // Skip empty values to prevent from empty og property
+                if (is_array($value)) {
+                    // A op property with multiple values or child-properties
+                    if (array_key_exists('0', $value)) {
+                        // A og property that accepts more than one value
+                        foreach ($value as $multiPropertyValue) {
+                            // Render each value to a new og property meta-tag
+                            $res[] = '<meta property="og:'.$key.'" content="'.$multiPropertyValue.'" />';
+                        }
+                    } else {
+                        // A og property with child-properties
+                        $res .= $this->renderHeaderLines($this->remapArray($key, $value));
+                    }
+                } else {
+                    // A singe og property to be rendered
+                    $res[] = '<meta property="og:'.$key.'" content="'.$value.'" />';
+                }
+            }
+        }
+        return implode(chr(10), $res);
+    }
 
-	/**
-	 * Remap an array: Add $prefixKey to keys of $array
-	 *
-	 * @param	string	$prefixKey
-	 * @param	array		$array
-	 * @return	array
-	 */
-	private function remapArray($prefixKey, $array) {
-		$res = array();
-		foreach ($array as $key => $value) {
-			$res[$prefixKey.':'.$key] = $value;
-		}
+    /**
+     * Remap an array: Add $prefixKey to keys of $array
+     *
+     * @param	string	$prefixKey
+     * @param	array		$array
+     * @return	array
+     */
+    private function remapArray($prefixKey, $array)
+    {
+        $res = array();
+        foreach ($array as $key => $value) {
+            $res[$prefixKey.':'.$key] = $value;
+        }
 
-		return $res;
-	}
+        return $res;
+    }
 }
-?>
