@@ -10,7 +10,7 @@ $tempColumns = array (
         'label' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:pages.tx_jhopengraphprotocol_ogtitle',
         'config' => array (
             'type' => 'input',
-            'size' => '30',
+            'size' => '160',
         )
     ),
     'tx_jhopengraphprotocol_ogtype' => array (
@@ -74,7 +74,7 @@ $tempColumns = array (
         'config' => array (
             'type' => 'input',
             'size' => '30',
-            'max' => '100',
+            'max' => '300',
         )
     ),
 );
