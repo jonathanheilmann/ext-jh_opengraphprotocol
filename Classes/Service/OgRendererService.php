@@ -4,7 +4,7 @@ namespace Heilmann\JhOpengraphprotocol\Service;
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2014-2015 Jonathan Heilmann <mail@jonathan-heilmann.de>
+*  (c) 2014-2016 Jonathan Heilmann <mail@jonathan-heilmann.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is

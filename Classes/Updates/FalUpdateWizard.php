@@ -6,7 +6,7 @@ use \TYPO3\CMS\Core\Utility\GeneralUtility;
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2015 Jonathan Heilmann <mail@jonathan-heilmann.de>
+*  (c) 2015-2016 Jonathan Heilmann <mail@jonathan-heilmann.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
