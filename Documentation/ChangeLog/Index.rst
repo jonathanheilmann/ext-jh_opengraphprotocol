@@ -23,6 +23,20 @@ ChangeLog
          Changes
 
  - :Version:
+         1.1.1
+
+   :Changes:
+         \* [BUGFIX]        #16     Can't use method return value in write context
+
+         \* [ENHANCEMENT]   #18     max character limit of the OG:description tag
+
+         \* [TASK]          #19     Update copyright year to 2016
+
+         \* [TASK]          #20     Implement PSR-2 standard
+
+         \* [BUGFIX]        #21     Wrong closing tag in template
+
+ - :Version:
          1.1.0
 
    :Changes:
