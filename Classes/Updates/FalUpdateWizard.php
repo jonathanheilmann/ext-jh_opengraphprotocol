@@ -1,8 +1,6 @@
 <?php
 namespace Heilmann\JhOpengraphprotocol\Updates;
 
-use \TYPO3\CMS\Core\Utility\GeneralUtility;
-
 /***************************************************************
 *  Copyright notice
 *
@@ -25,6 +23,7 @@ use \TYPO3\CMS\Core\Utility\GeneralUtility;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
 * @author    Jonathan Heilmann <mail@jonathan-heilmann.de>
@@ -69,13 +68,13 @@ class FalUpdateWizard extends \TYPO3\CMS\Install\Updates\AbstractUpdate {
 	protected function init() {
 		$fileadminDirectory = rtrim($GLOBALS['TYPO3_CONF_VARS']['BE']['fileadminDir'], '/') . '/';
 		/** @var $storageRepository \TYPO3\CMS\Core\Resource\StorageRepository */
-		$storageRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\StorageRepository');
+		$storageRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\StorageRepository');
 		$storages = $storageRepository->findAll();
 		foreach ($storages as $storage) {
 			$storageRecord = $storage->getStorageRecord();
 			$configuration = $storage->getConfiguration();
 			$isLocalDriver = $storageRecord['driver'] === 'Local';
-			$isOnFileadmin = !empty($configuration['basePath']) && \TYPO3\CMS\Core\Utility\GeneralUtility::isFirstPartOfStr($configuration['basePath'], $fileadminDirectory);
+			$isOnFileadmin = !empty($configuration['basePath']) && GeneralUtility::isFirstPartOfStr($configuration['basePath'], $fileadminDirectory);
 			if ($isLocalDriver && $isOnFileadmin) {
 				$this->storage = $storage;
 				break;
@@ -84,8 +83,8 @@ class FalUpdateWizard extends \TYPO3\CMS\Install\Updates\AbstractUpdate {
 		if (!isset($this->storage)) {
 			throw new \RuntimeException('Local default storage could not be initialized - might be due to missing sys_file* tables.');
 		}
-		$this->fileFactory = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\ResourceFactory');
-		$this->fileRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\FileRepository');
+		$this->fileFactory = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\ResourceFactory');
+		$this->fileRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\FileRepository');
 		$this->targetDirectory = PATH_site . $fileadminDirectory . self::FOLDER_ContentUploads . '/';
 	}
 
@@ -182,12 +181,12 @@ class FalUpdateWizard extends \TYPO3\CMS\Install\Updates\AbstractUpdate {
 	 */
 	protected function migrateFiles(array $record, $field) {
 		$filesList = $record['tx_jhopengraphprotocol_ogimage'];
-		$files = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $filesList, TRUE);
+		$files = GeneralUtility::trimExplode(',', $filesList, TRUE);
 		
 		if ($files) {
 			foreach ($files as $file) {
 				if (file_exists(PATH_site . 'uploads/tx_jhopengraphprotocol/' . $file)) {
-					\TYPO3\CMS\Core\Utility\GeneralUtility::upload_copy_move(
+					GeneralUtility::upload_copy_move(
 							PATH_site . 'uploads/tx_jhopengraphprotocol/' . $file,
 							$this->targetDirectory . $file);
 				
