@@ -41,6 +41,14 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
     public $cObj;
 
     /**
+     * SignalSlotDispatcher
+     *
+     * @var \TYPO3\CMS\Extbase\SignalSlot\Dispatcher
+     * @inject
+     */
+    protected $signalSlotDispatcher;
+
+    /**
      * Main-function to render the Open Graph protocol content.
      *
      * @param	string	$content
@@ -52,6 +60,12 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
         $extKey = 'tx_jhopengraphprotocol';
         $content = '';
         $og = array();
+
+        if ($this->signalSlotDispatcher == null) {
+            /* @var \TYPO3\CMS\Extbase\Object\ObjectManager */
+            $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+            $this->signalSlotDispatcher = $objectManager->get('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
+        }
 
         // 2013-04-22	kraftb@webconsulting.at
         // Check if the tt_news "displaySingle" method has been called before
@@ -133,6 +147,13 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
         if (isset($localeParts[0])) {
             $og['locale'] = str_replace('-', '_', $localeParts[0]);
         }
+
+        // Signal to manipulate og-properties before header creation
+        $this->signalSlotDispatcher->dispatch(
+            __CLASS__,
+            'beforeHeaderCreation',
+            array($og, $this->cObj)
+        );
 
         //add tags to html-header
         $GLOBALS['TSFE']->additionalHeaderData[$extKey] = $this->renderHeaderLines($og);
