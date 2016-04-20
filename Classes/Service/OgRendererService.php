@@ -27,14 +27,16 @@ namespace Heilmann\JhOpengraphprotocol\Service;
 use \TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
-* @author    Jonathan Heilmann <mail@jonathan-heilmann.de>
-* @package    tx_jhopengraphprotocol
-*/
-class OgRendererService
+ * Class OgRendererService
+ * @package Heilmann\JhOpengraphprotocol\Service
+ */
+class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
 {
 
     /**
      * content Object
+     *
+     * @var \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer
      */
     public $cObj;
 
