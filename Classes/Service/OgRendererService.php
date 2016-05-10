@@ -152,7 +152,7 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
         $this->signalSlotDispatcher->dispatch(
             __CLASS__,
             'beforeHeaderCreation',
-            array($og, $this->cObj)
+            array(&$og, $this->cObj)
         );
 
         //add tags to html-header
