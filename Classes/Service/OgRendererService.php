@@ -27,16 +27,26 @@ namespace Heilmann\JhOpengraphprotocol\Service;
 use \TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
-* @author    Jonathan Heilmann <mail@jonathan-heilmann.de>
-* @package    tx_jhopengraphprotocol
-*/
-class OgRendererService
+ * Class OgRendererService
+ * @package Heilmann\JhOpengraphprotocol\Service
+ */
+class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
 {
 
     /**
      * content Object
+     *
+     * @var \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer
      */
     public $cObj;
+
+    /**
+     * SignalSlotDispatcher
+     *
+     * @var \TYPO3\CMS\Extbase\SignalSlot\Dispatcher
+     * @inject
+     */
+    protected $signalSlotDispatcher;
 
     /**
      * Main-function to render the Open Graph protocol content.
@@ -50,6 +60,12 @@ class OgRendererService
         $extKey = 'tx_jhopengraphprotocol';
         $content = '';
         $og = array();
+
+        if ($this->signalSlotDispatcher == null) {
+            /* @var \TYPO3\CMS\Extbase\Object\ObjectManager */
+            $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+            $this->signalSlotDispatcher = $objectManager->get('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
+        }
 
         // 2013-04-22	kraftb@webconsulting.at
         // Check if the tt_news "displaySingle" method has been called before
@@ -84,16 +100,16 @@ class OgRendererService
         $fileObjects = $fileRepository->findByRelation('pages', 'tx_jhopengraphprotocol_ogfalimages', $GLOBALS['TSFE']->id);
         if (count($fileObjects)) {
             foreach ($fileObjects as $key => $fileObject) {
-                /** @var \TYPO3\CMS\Core\Resource\File $fileObject */
-                $og['image'][] = GeneralUtility::locationHeaderUrl($fileObject->getPublicUrl());
+                /** @var \TYPO3\CMS\Core\Resource\FileReference $fileObject */
+                $og['image'][] = $fileObject;
             }
         } else {
             // check if an image is given in page --> media, if not use default image
             $fileObjects = $fileRepository->findByRelation('pages', 'media', $GLOBALS['TSFE']->id);
             if (count($fileObjects)) {
                 foreach ($fileObjects as $key => $fileObject) {
-                    /** @var \TYPO3\CMS\Core\Resource\File $fileObject */
-                    $og['image'][] = GeneralUtility::locationHeaderUrl($fileObject->getPublicUrl());
+                    /** @var \TYPO3\CMS\Core\Resource\FileReference $fileObject */
+                    $og['image'][] = $fileObject;
                 }
             } else {
                 $imageFileName = $GLOBALS['TSFE']->tmpl->getFileName($conf['image']);
@@ -132,6 +148,13 @@ class OgRendererService
             $og['locale'] = str_replace('-', '_', $localeParts[0]);
         }
 
+        // Signal to manipulate og-properties before header creation
+        $this->signalSlotDispatcher->dispatch(
+            __CLASS__,
+            'beforeHeaderCreation',
+            array(&$og, $this->cObj)
+        );
+
         //add tags to html-header
         $GLOBALS['TSFE']->additionalHeaderData[$extKey] = $this->renderHeaderLines($og);
 
@@ -155,19 +178,44 @@ class OgRendererService
                         // A og property that accepts more than one value
                         foreach ($value as $multiPropertyValue) {
                             // Render each value to a new og property meta-tag
-                            $res[] = '<meta property="og:'.$key.'" content="'.$multiPropertyValue.'" />';
+                            if (is_string($multiPropertyValue)) {
+                                $res[] = $this->buildProperty($key, $multiPropertyValue);
+                            } else if ($key == 'image' && is_object($multiPropertyValue) && get_class($multiPropertyValue) == 'TYPO3\CMS\Core\Resource\FileReference')
+                            {
+                                // Add image details
+                                /** @var \TYPO3\CMS\Core\Resource\FileReference $multiPropertyValue */
+                                $res[] = $this->buildProperty($key,
+                                    GeneralUtility::locationHeaderUrl($multiPropertyValue->getPublicUrl()));
+                                $res[] = $this->buildProperty($key . ':type', $multiPropertyValue->getMimeType());
+                                $res[] = $this->buildProperty($key . ':width',
+                                    $multiPropertyValue->getProperty('width'));
+                                $res[] = $this->buildProperty($key . ':height',
+                                    $multiPropertyValue->getProperty('height'));
+                            }
                         }
                     } else {
                         // A og property with child-properties
                         $res .= $this->renderHeaderLines($this->remapArray($key, $value));
                     }
                 } else {
-                    // A singe og property to be rendered
-                    $res[] = '<meta property="og:'.$key.'" content="'.$value.'" />';
+                    // A single og property to be rendered
+                    $res[] = $this->buildProperty($key, $value);
                 }
             }
         }
         return implode(chr(10), $res);
+    }
+
+    /**
+     * Build meta property tag
+     *
+     * @param   string  $key
+     * @param   string  $value
+     * @return  string
+     */
+    private function buildProperty($key, $value)
+    {
+        return '<meta property="og:' . $key . '" content="' . $value . '" />';
     }
 
     /**
@@ -180,9 +228,8 @@ class OgRendererService
     private function remapArray($prefixKey, $array)
     {
         $res = array();
-        foreach ($array as $key => $value) {
+        foreach ($array as $key => $value)
             $res[$prefixKey.':'.$key] = $value;
-        }
 
         return $res;
     }

@@ -40,6 +40,13 @@ Please read the introductions carefully and follow each step.
       :local:
       :depth: 1
 
+
+.. _admin-updating-toVersion120:
+
+To version 1.2.0
+^^^^^^^^^^^^^^^^
+
+Skips tx_jhopengraphprotocol for single news view, as EXT:news adds dedicated og-properties.
    
 .. _admin-updating-toVersion110:
 

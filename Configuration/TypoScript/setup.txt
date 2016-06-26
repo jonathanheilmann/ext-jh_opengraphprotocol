@@ -10,3 +10,9 @@ temp.tx_jhopengraphprotocol {
     description = {$plugin.tx_jhopengraphprotocol.description}
 }
 page.669 < temp.tx_jhopengraphprotocol
+
+// Skip tx_jhopengraphprotocol for single news view, as EXT:news adds dedicated og-properties
+[globalVar = GP:tx_news_pi1|news > 0]
+    temp.tx_jhopengraphprotocol >
+    page.669 >
+[global]
