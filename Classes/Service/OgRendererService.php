@@ -100,16 +100,16 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
         $fileObjects = $fileRepository->findByRelation('pages', 'tx_jhopengraphprotocol_ogfalimages', $GLOBALS['TSFE']->id);
         if (count($fileObjects)) {
             foreach ($fileObjects as $key => $fileObject) {
-                /** @var \TYPO3\CMS\Core\Resource\File $fileObject */
-                $og['image'][] = GeneralUtility::locationHeaderUrl($fileObject->getPublicUrl());
+                /** @var \TYPO3\CMS\Core\Resource\FileReference $fileObject */
+                $og['image'][] = $fileObject;
             }
         } else {
             // check if an image is given in page --> media, if not use default image
             $fileObjects = $fileRepository->findByRelation('pages', 'media', $GLOBALS['TSFE']->id);
             if (count($fileObjects)) {
                 foreach ($fileObjects as $key => $fileObject) {
-                    /** @var \TYPO3\CMS\Core\Resource\File $fileObject */
-                    $og['image'][] = GeneralUtility::locationHeaderUrl($fileObject->getPublicUrl());
+                    /** @var \TYPO3\CMS\Core\Resource\FileReference $fileObject */
+                    $og['image'][] = $fileObject;
                 }
             } else {
                 $imageFileName = $GLOBALS['TSFE']->tmpl->getFileName($conf['image']);
@@ -178,19 +178,45 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
                         // A og property that accepts more than one value
                         foreach ($value as $multiPropertyValue) {
                             // Render each value to a new og property meta-tag
-                            $res[] = '<meta property="og:'.$key.'" content="'.$multiPropertyValue.'" />';
+                            if (is_string($multiPropertyValue)) {
+                                $res[] = $this->buildProperty($key, $multiPropertyValue);
+                            }
+
+                            // Add image details
+                            if ($key == 'image' && is_object($multiPropertyValue) && get_class($multiPropertyValue) == 'TYPO3\CMS\Core\Resource\FileReference') {
+                                /** @var \TYPO3\CMS\Core\Resource\FileReference $multiPropertyValue */
+                                $res[] = $this->buildProperty($key,
+                                    GeneralUtility::locationHeaderUrl($multiPropertyValue->getPublicUrl()));
+                                $res[] = $this->buildProperty($key . ':type', $multiPropertyValue->getMimeType());
+                                $res[] = $this->buildProperty($key . ':width',
+                                    $multiPropertyValue->getProperty('width'));
+                                $res[] = $this->buildProperty($key . ':height',
+                                    $multiPropertyValue->getProperty('height'));
+                            }
                         }
                     } else {
                         // A og property with child-properties
                         $res .= $this->renderHeaderLines($this->remapArray($key, $value));
                     }
                 } else {
-                    // A singe og property to be rendered
-                    $res[] = '<meta property="og:'.$key.'" content="'.$value.'" />';
+                    // A single og property to be rendered
+                    $res[] = $this->buildProperty($key, $value);
                 }
             }
         }
         return implode(chr(10), $res);
+    }
+
+    /**
+     * Build meta property tag
+     *
+     * @param   string  $key
+     * @param   string  $value
+     * @return  string
+     */
+    private function buildProperty($key, $value)
+    {
+        return '<meta property="og:' . $key . '" content="' . $value . '" />';
     }
 
     /**
@@ -203,9 +229,8 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
     private function remapArray($prefixKey, $array)
     {
         $res = array();
-        foreach ($array as $key => $value) {
+        foreach ($array as $key => $value)
             $res[$prefixKey.':'.$key] = $value;
-        }
 
         return $res;
     }
