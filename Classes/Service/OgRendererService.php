@@ -180,10 +180,9 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
                             // Render each value to a new og property meta-tag
                             if (is_string($multiPropertyValue)) {
                                 $res[] = $this->buildProperty($key, $multiPropertyValue);
-                            }
-
-                            // Add image details
-                            if ($key == 'image' && is_object($multiPropertyValue) && get_class($multiPropertyValue) == 'TYPO3\CMS\Core\Resource\FileReference') {
+                            } else if ($key == 'image' && is_object($multiPropertyValue) && get_class($multiPropertyValue) == 'TYPO3\CMS\Core\Resource\FileReference')
+                            {
+                                // Add image details
                                 /** @var \TYPO3\CMS\Core\Resource\FileReference $multiPropertyValue */
                                 $res[] = $this->buildProperty($key,
                                     GeneralUtility::locationHeaderUrl($multiPropertyValue->getPublicUrl()));
