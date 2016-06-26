@@ -23,6 +23,20 @@ ChangeLog
          Changes
 
  - :Version:
+         1.2.0
+
+   :Changes:
+         \* [TASK]                  Update documentation
+
+         \* [ENHANCEMENT]   #30     Add image details (size, mime)
+
+         \* [ENHANCEMENT]   #29     Conflicts with news 3.2.4 (Skip tx_jhopengraphprotocol for single news view, as EXT:news adds dedicated og-properties)
+
+         \* [ENHANCEMENT]   #26     Add composer.json
+
+         \* [ENHANCEMENT]   #25     Overwrite tags from extbase
+
+ - :Version:
          1.1.1
 
    :Changes:
