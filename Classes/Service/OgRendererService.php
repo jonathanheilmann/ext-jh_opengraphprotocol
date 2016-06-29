@@ -114,7 +114,7 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
             } else {
                 $imageFileName = $GLOBALS['TSFE']->tmpl->getFileName($conf['image']);
                 if (!empty($imageFileName)) {
-                    $og['image'][] = GeneralUtility::locationHeaderUrl($imageFileName);
+                    $og['image'][] = $imageFileName;
                 }
             }
         }
@@ -178,19 +178,32 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
                         // A og property that accepts more than one value
                         foreach ($value as $multiPropertyValue) {
                             // Render each value to a new og property meta-tag
-                            if (is_string($multiPropertyValue)) {
-                                $res[] = $this->buildProperty($key, $multiPropertyValue);
-                            } else if ($key == 'image' && is_object($multiPropertyValue) && get_class($multiPropertyValue) == 'TYPO3\CMS\Core\Resource\FileReference')
+                            if ($key == 'image')
                             {
                                 // Add image details
-                                /** @var \TYPO3\CMS\Core\Resource\FileReference $multiPropertyValue */
-                                $res[] = $this->buildProperty($key,
-                                    GeneralUtility::locationHeaderUrl($multiPropertyValue->getPublicUrl()));
-                                $res[] = $this->buildProperty($key . ':type', $multiPropertyValue->getMimeType());
-                                $res[] = $this->buildProperty($key . ':width',
-                                    $multiPropertyValue->getProperty('width'));
-                                $res[] = $this->buildProperty($key . ':height',
-                                    $multiPropertyValue->getProperty('height'));
+                                if (is_object($multiPropertyValue) && get_class($multiPropertyValue) == 'TYPO3\CMS\Core\Resource\FileReference')
+                                {
+                                    /** @var \TYPO3\CMS\Core\Resource\FileReference $multiPropertyValue */
+                                    $res[] = $this->buildProperty($key,
+                                        GeneralUtility::locationHeaderUrl($multiPropertyValue->getPublicUrl()));
+                                    $res[] = $this->buildProperty($key . ':type', $multiPropertyValue->getMimeType());
+                                    $res[] = $this->buildProperty($key . ':width',
+                                        $multiPropertyValue->getProperty('width'));
+                                    $res[] = $this->buildProperty($key . ':height',
+                                        $multiPropertyValue->getProperty('height'));
+                                } else if (is_string($multiPropertyValue))
+                                {
+                                    $imageSize = getimagesize(GeneralUtility::getFileAbsFileName($multiPropertyValue));
+
+                                    $res[] = $this->buildProperty($key,
+                                        GeneralUtility::locationHeaderUrl($multiPropertyValue));
+                                    $res[] = $this->buildProperty($key . ':type', $imageSize['mime']);
+                                    $res[] = $this->buildProperty($key . ':width', $imageSize[0]);
+                                    $res[] = $this->buildProperty($key . ':height', $imageSize[0]);
+                                }
+                            } else
+                            {
+                                $res[] = $this->buildProperty($key, $multiPropertyValue);
                             }
                         }
                     } else {
