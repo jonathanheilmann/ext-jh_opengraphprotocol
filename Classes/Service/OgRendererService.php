@@ -24,7 +24,10 @@ namespace Heilmann\JhOpengraphprotocol\Service;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use \TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Resource\FileReference;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\ArrayUtility;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /**
  * Class OgRendererService
@@ -71,9 +74,13 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
         // Check if the tt_news "displaySingle" method has been called before
         if (class_exists('tx_jhopengraphttnews_displaySingleHook')) {
             $hookObject = GeneralUtility::makeInstance('tx_jhopengraphttnews_displaySingleHook');
-            if ($hookObject->singleViewDisplayed()) {
+            if ($hookObject->singleViewDisplayed())
                 return $content;
-            }
+        }
+        if (class_exists(\Heilmann\JhOpengraphTtnews\Hooks\DisplaySingle::class)) {
+            $hookObject = GeneralUtility::makeInstance(\Heilmann\JhOpengraphTtnews\Hooks\DisplaySingle::class);
+            if ($hookObject->singleViewDisplayed())
+                return $content;
         }
 
         //if there has been no return, get og properties and render output
@@ -100,7 +107,7 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
         $fileObjects = $fileRepository->findByRelation('pages', 'tx_jhopengraphprotocol_ogfalimages', $GLOBALS['TSFE']->id);
         if (count($fileObjects)) {
             foreach ($fileObjects as $key => $fileObject) {
-                /** @var \TYPO3\CMS\Core\Resource\FileReference $fileObject */
+                /** @var FileReference $fileObject */
                 $og['image'][] = $fileObject;
             }
         } else {
@@ -108,7 +115,7 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
             $fileObjects = $fileRepository->findByRelation('pages', 'media', $GLOBALS['TSFE']->id);
             if (count($fileObjects)) {
                 foreach ($fileObjects as $key => $fileObject) {
-                    /** @var \TYPO3\CMS\Core\Resource\FileReference $fileObject */
+                    /** @var FileReference $fileObject */
                     $og['image'][] = $fileObject;
                 }
             } else {
@@ -162,61 +169,92 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
     }
 
     /**
-     * Render the header lines to be added from array
+     * Renders the header lines to be added from array
      *
      * @param	array		$array
      * @return	string
      */
-    private function renderHeaderLines($array)
+    protected function renderHeaderLines($array)
     {
         $res = array();
-        foreach ($array as $key => $value) {
-            if (!empty($value)) { // Skip empty values to prevent from empty og property
-                if (is_array($value)) {
+        foreach ($array as $key => $value)
+        {
+            if (!empty($value))
+            {
+                // Skip empty values to prevent from empty og property
+                if (is_array($value))
+                {
                     // A op property with multiple values or child-properties
-                    if (array_key_exists('0', $value)) {
+                    if (array_key_exists('0', $value))
+                    {
                         // A og property that accepts more than one value
-                        foreach ($value as $multiPropertyValue) {
+                        foreach ($value as $multiPropertyValue)
+                        {
                             // Render each value to a new og property meta-tag
                             if ($key == 'image')
                             {
                                 // Add image details
-                                if (is_object($multiPropertyValue) && get_class($multiPropertyValue) == 'TYPO3\CMS\Core\Resource\FileReference')
-                                {
-                                    /** @var \TYPO3\CMS\Core\Resource\FileReference $multiPropertyValue */
-                                    $res[] = $this->buildProperty($key,
-                                        GeneralUtility::locationHeaderUrl($multiPropertyValue->getPublicUrl()));
-                                    $res[] = $this->buildProperty($key . ':type', $multiPropertyValue->getMimeType());
-                                    $res[] = $this->buildProperty($key . ':width',
-                                        $multiPropertyValue->getProperty('width'));
-                                    $res[] = $this->buildProperty($key . ':height',
-                                        $multiPropertyValue->getProperty('height'));
-                                } else if (is_string($multiPropertyValue))
-                                {
-                                    $imageSize = getimagesize(GeneralUtility::getFileAbsFileName($multiPropertyValue));
-
-                                    $res[] = $this->buildProperty($key,
-                                        GeneralUtility::locationHeaderUrl($multiPropertyValue));
-                                    $res[] = $this->buildProperty($key . ':type', $imageSize['mime']);
-                                    $res[] = $this->buildProperty($key . ':width', $imageSize[0]);
-                                    $res[] = $this->buildProperty($key . ':height', $imageSize[0]);
-                                }
+                                $res[] = $this->buildOgImageProperties($key, $multiPropertyValue);
                             } else
                             {
                                 $res[] = $this->buildProperty($key, $multiPropertyValue);
                             }
                         }
-                    } else {
+                    } else
+                    {
                         // A og property with child-properties
                         $res .= $this->renderHeaderLines($this->remapArray($key, $value));
                     }
-                } else {
+                } else
+                {
                     // A single og property to be rendered
                     $res[] = $this->buildProperty($key, $value);
                 }
             }
         }
-        return implode(chr(10), $res);
+        return implode(chr(10), ArrayUtility::flatten($res));
+    }
+
+    /**
+     * Builds open graph properties for images
+     *
+     * @param string $key
+     * @param mixed $value
+     * @return array
+     */
+    protected function buildOgImageProperties($key, $value)
+    {
+        $res = array();
+
+        if (is_object($value) && $value instanceOf FileReference)
+        {
+            /** @var FileReference $value */
+            $res[] = $this->buildProperty($key,
+                GeneralUtility::locationHeaderUrl($value->getPublicUrl()));
+            $res[] = $this->buildProperty($key . ':type', $value->getMimeType());
+            $res[] = $this->buildProperty($key . ':width',
+                $value->getProperty('width'));
+            $res[] = $this->buildProperty($key . ':height',
+                $value->getProperty('height'));
+        } else if (is_string($value))
+        {
+            $absImagePath = GeneralUtility::getFileAbsFileName($value);
+            if (file_exists($absImagePath))
+            {
+                $imageSize = getimagesize($absImagePath);
+
+                $res[] = $this->buildProperty($key,
+                    GeneralUtility::locationHeaderUrl($value));
+                if ($imageSize['mime'])
+                    $res[] = $this->buildProperty($key . ':type', $imageSize['mime']);
+                if ($imageSize[0])
+                    $res[] = $this->buildProperty($key . ':width', $imageSize[0]);
+                if ($imageSize[1])
+                    $res[] = $this->buildProperty($key . ':height', $imageSize[1]);
+            }
+        }
+
+        return $res;
     }
 
     /**
@@ -226,7 +264,7 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
      * @param   string  $value
      * @return  string
      */
-    private function buildProperty($key, $value)
+    protected function buildProperty($key, $value)
     {
         return '<meta property="og:' . $key . '" content="' . $value . '" />';
     }
@@ -238,7 +276,7 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
      * @param	array		$array
      * @return	array
      */
-    private function remapArray($prefixKey, $array)
+    protected function remapArray($prefixKey, $array)
     {
         $res = array();
         foreach ($array as $key => $value)
