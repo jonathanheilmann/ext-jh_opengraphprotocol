@@ -238,20 +238,45 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
                 $value->getProperty('height'));
         } else if (is_string($value))
         {
-            $absImagePath = GeneralUtility::getFileAbsFileName($value);
-            if (file_exists($absImagePath))
+            $imageSize = array();
+            $parsedUrl = parse_url($value);
+            if (isset($parsedUrl['host']) && $parsedUrl['host'])
             {
-                $imageSize = getimagesize($absImagePath);
+                // Analyze image with given host
+                $res[] = $this->buildProperty($key, $value);
 
-                $res[] = $this->buildProperty($key,
-                    GeneralUtility::locationHeaderUrl($value));
-                if ($imageSize['mime'])
-                    $res[] = $this->buildProperty($key . ':type', $imageSize['mime']);
-                if ($imageSize[0])
-                    $res[] = $this->buildProperty($key . ':width', $imageSize[0]);
-                if ($imageSize[1])
-                    $res[] = $this->buildProperty($key . ':height', $imageSize[1]);
+                if (GeneralUtility::getHostname() == $parsedUrl['host'])
+                {
+                    // Get image absolute filename on own host
+                    $value = GeneralUtility::getFileAbsFileName(
+                        substr($parsedUrl['path'], 1) .
+                        (isset($parsedUrl['query']) && $parsedUrl['query'] ? '?' . $parsedUrl['query'] : '') .
+                        (isset($parsedUrl['fragment']) && $parsedUrl['fragment'] ? '#' . $parsedUrl['fragment'] : '')
+                    );
+                }
+
+                if (file_exists($value))
+                    $imageSize = getimagesize($value);
+            } else
+            {
+                // Analyze image with relative filename
+                $absImagePath = GeneralUtility::getFileAbsFileName($value);
+                if (file_exists($absImagePath))
+                {
+                    $imageSize = getimagesize($absImagePath);
+
+                    $res[] = $this->buildProperty($key,
+                        GeneralUtility::locationHeaderUrl($value));
+                }
             }
+
+            // Add image details if available
+            if (isset($imageSize['mime']) && $imageSize['mime'])
+                $res[] = $this->buildProperty($key . ':type', $imageSize['mime']);
+            if (isset($imageSize[0]) && $imageSize[0])
+                $res[] = $this->buildProperty($key . ':width', $imageSize[0]);
+            if (isset($imageSize[1]) && $imageSize[1])
+                $res[] = $this->buildProperty($key . ':height', $imageSize[1]);
         }
 
         return $res;
