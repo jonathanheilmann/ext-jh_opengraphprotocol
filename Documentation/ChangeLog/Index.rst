@@ -23,6 +23,12 @@ ChangeLog
          Changes
 
  - :Version:
+         1.2.1
+
+   :Changes:
+         \* [BUGFIX]        #32     og:image:type, width, height fails for TS image
+
+ - :Version:
          1.2.0
 
    :Changes:
