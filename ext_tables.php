@@ -74,7 +74,7 @@ $tempColumns = array(
         'config' => array(
             'type' => 'text',
             'size' => '30',
-            'rows' => '3'
+            'rows' => '3',
             'max' => '300',
         )
     ),
