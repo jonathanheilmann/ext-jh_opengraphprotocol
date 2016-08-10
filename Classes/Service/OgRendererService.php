@@ -86,25 +86,28 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
         //if there has been no return, get og properties and render output
 
         // Get title
-        if (!empty($this->cObj->data['tx_jhopengraphprotocol_ogtitle'])) {
-            $og['title'] = $this->cObj->data['tx_jhopengraphprotocol_ogtitle'];
+        if (!empty($GLOBALS['TSFE']->page['tx_jhopengraphprotocol_ogtitle'])) {
+            $og['title'] = $GLOBALS['TSFE']->page['tx_jhopengraphprotocol_ogtitle'];
         } else {
             $og['title'] = $GLOBALS['TSFE']->page['title'];
         }
         $og['title'] = htmlspecialchars($og['title']);
 
         // Get type
-        if (!empty($this->cObj->data['tx_jhopengraphprotocol_ogtype'])) {
-            $og['type'] = $this->cObj->data['tx_jhopengraphprotocol_ogtype'];
+        if (!empty($GLOBALS['TSFE']->page['tx_jhopengraphprotocol_ogtype'])) {
+            $og['type'] = $GLOBALS['TSFE']->page['tx_jhopengraphprotocol_ogtype'];
         } else {
             $og['type'] = $conf['type'];
         }
         $og['type'] = htmlspecialchars($og['type']);
 
         // Get image
-        /** @var \TYPO3\CMS\Core\Resource\FileRepository $fileRepository */
+		$fileRelationPid = $GLOBALS['TSFE']->page['_PAGES_OVERLAY_UID'] ?: $GLOBALS['TSFE']->id;
+		$fileRelationTable = $GLOBALS['TSFE']->page['_PAGES_OVERLAY_UID'] ? 'pages_language_overlay' : 'pages';
+
+		/** @var \TYPO3\CMS\Core\Resource\FileRepository $fileRepository */
         $fileRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\FileRepository');
-        $fileObjects = $fileRepository->findByRelation('pages', 'tx_jhopengraphprotocol_ogfalimages', $GLOBALS['TSFE']->id);
+        $fileObjects = $fileRepository->findByRelation($fileRelationTable, 'tx_jhopengraphprotocol_ogfalimages', $fileRelationPid);
         if (count($fileObjects)) {
             foreach ($fileObjects as $key => $fileObject) {
                 /** @var FileReference $fileObject */
@@ -112,7 +115,7 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
             }
         } else {
             // check if an image is given in page --> media, if not use default image
-            $fileObjects = $fileRepository->findByRelation('pages', 'media', $GLOBALS['TSFE']->id);
+            $fileObjects = $fileRepository->findByRelation($fileRelationTable, 'media', $fileRelationPid);
             if (count($fileObjects)) {
                 foreach ($fileObjects as $key => $fileObject) {
                     /** @var FileReference $fileObject */
@@ -125,7 +128,7 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
                 }
             }
         }
-        
+
         // Get url
         $og['url'] = htmlentities(GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL'));
 
@@ -138,8 +141,8 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
         $og['site_name'] = htmlspecialchars($og['site_name']);
 
         // Get description
-        if (!empty($this->cObj->data['tx_jhopengraphprotocol_ogdescription'])) {
-            $og['description'] = $this->cObj->data['tx_jhopengraphprotocol_ogdescription'];
+        if (!empty($GLOBALS['TSFE']->page['tx_jhopengraphprotocol_ogdescription'])) {
+            $og['description'] = $GLOBALS['TSFE']->page['tx_jhopengraphprotocol_ogdescription'];
         } else {
             if (!empty($GLOBALS['TSFE']->page['description'])) {
                 $og['description'] = $GLOBALS['TSFE']->page['description'];
