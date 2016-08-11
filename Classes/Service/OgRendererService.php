@@ -25,6 +25,7 @@ namespace Heilmann\JhOpengraphprotocol\Service;
 ***************************************************************/
 
 use TYPO3\CMS\Core\Resource\FileReference;
+use TYPO3\CMS\Core\Resource\FileRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 
@@ -93,37 +94,51 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
             $GLOBALS['TSFE']->page['title']);
 
         // Get type
-
-        // Get image
-		$fileRelationPid = $GLOBALS['TSFE']->page['_PAGES_OVERLAY_UID'] ?: $GLOBALS['TSFE']->id;
-		$fileRelationTable = $GLOBALS['TSFE']->page['_PAGES_OVERLAY_UID'] ? 'pages_language_overlay' : 'pages';
-
-		/** @var \TYPO3\CMS\Core\Resource\FileRepository $fileRepository */
-        $fileRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\FileRepository');
-        $fileObjects = $fileRepository->findByRelation($fileRelationTable, 'tx_jhopengraphprotocol_ogfalimages', $fileRelationPid);
-        if (count($fileObjects)) {
-            foreach ($fileObjects as $key => $fileObject) {
-                /** @var FileReference $fileObject */
-                $og['image'][] = $fileObject;
-            }
-        } else {
         $og['type'] = htmlspecialchars(!empty($GLOBALS['TSFE']->page['tx_jhopengraphprotocol_ogtype']) ?
             $GLOBALS['TSFE']->page['tx_jhopengraphprotocol_ogtype'] :
             $conf['type']);
+
+        // Get images
+        /** @var FileRepository $fileRepository */
+        $fileRepository = GeneralUtility::makeInstance(FileRepository::class);
+
+        $fileObjects = array();
+        if ($GLOBALS['TSFE']->page['_PAGES_OVERLAY_UID'])
+        {
+            // Get images if there is a language overlay
+            // This is somehow a hack, as l10n_mode 'mergeIfNotBlack' does not work in this case.
+            // PageRepository->shouldFieldBeOverlaid does not work for config type 'inline' with "DEFAULT '0'" database config,
+            // as an empty inline field is '0', and '0' is treated as not empty.
+            // Setting 'Default NULL' in database config won't work, too, as it isn't easier to check, if value in
+            // $GLOBALS['TSFE']->page['tx_jhopengraphprotocol_ogtype'] is related to table 'pages' or 'pages_language_overlay'.
+
+            // Parameter 3 (uid) is always the pages' uid, as sys_file_reference always references to the pages' uid, even on pages_language_overlay
+            $overlayFileObjects = $fileRepository->findByRelation('pages_language_overlay', 'tx_jhopengraphprotocol_ogfalimages', $GLOBALS['TSFE']->id);
+            if (count($overlayFileObjects) > 0)
+                $fileObjects = $overlayFileObjects;
+            else if (isset($GLOBALS['TCA']['pages_language_overlay']['columns']['tx_jhopengraphprotocol_ogfalimages']['l10n_mode']) &&
+                $GLOBALS['TCA']['pages_language_overlay']['columns']['tx_jhopengraphprotocol_ogfalimages']['l10n_mode'] === 'mergeIfNotBlank')
+                $fileObjects = $fileRepository->findByRelation('pages', 'tx_jhopengraphprotocol_ogfalimages', $GLOBALS['TSFE']->id);
+        } else
+            $fileObjects = $fileRepository->findByRelation('pages', 'tx_jhopengraphprotocol_ogfalimages', $GLOBALS['TSFE']->id);
+
+        if (count($fileObjects) === 0)
+        {
             // check if an image is given in page --> media, if not use default image
-            $fileObjects = $fileRepository->findByRelation($fileRelationTable, 'media', $fileRelationPid);
-            if (count($fileObjects)) {
-                foreach ($fileObjects as $key => $fileObject) {
-                    /** @var FileReference $fileObject */
-                    $og['image'][] = $fileObject;
-                }
-            } else {
+            $fileObjects = $fileRepository->findByRelation(
+                ($GLOBALS['TSFE']->page['_PAGES_OVERLAY_UID'] ? 'pages_language_overlay' : 'pages'),
+                'media',
+                ($GLOBALS['TSFE']->page['_PAGES_OVERLAY_UID'] ?:$GLOBALS['TSFE']->id)
+            );
+            if (count($fileObjects) === 0)
+            {
                 $imageFileName = $GLOBALS['TSFE']->tmpl->getFileName($conf['image']);
-                if (!empty($imageFileName)) {
+                if (!empty($imageFileName))
                     $og['image'][] = $imageFileName;
-                }
-            }
-        }
+            } else
+                $og['image'] = $fileObjects;
+        } else
+            $og['image'] = $fileObjects;
 
         // Get url
         $og['url'] = htmlentities(GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL'));

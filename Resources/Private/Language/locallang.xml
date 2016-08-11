@@ -11,6 +11,7 @@
 			<label index="pages.tx_jhopengraphprotocol_ogtitle">Title</label>
 			<label index="pages.tx_jhopengraphprotocol_ogtype">Type</label>
 			<label index="pages.tx_jhopengraphprotocol_ogimage">Image</label>
+			<label index="pages.tx_jhopengraphprotocol_ogimage.mergeIfNotBlank">Image (The image(s) of the default language will be used if this field is left empty in the translation.)</label>
 			<label index="pages.tx_jhopengraphprotocol_ogdescription">Description</label>
 		</languageKey>
 		<languageKey index="de" type="array">
@@ -19,6 +20,7 @@
 			<label index="pages.tx_jhopengraphprotocol_ogtitle">Titel</label>
 			<label index="pages.tx_jhopengraphprotocol_ogtype">Typ</label>
 			<label index="pages.tx_jhopengraphprotocol_ogimage">Bild</label>
+			<label index="pages.tx_jhopengraphprotocol_ogimage.mergeIfNotBlank">Bild (Das Bild/die Bilder der Standardsprache wird/werden verwendet, wenn dieses Feld in der Übersetzung leer ist.)</label>
 			<label index="pages.tx_jhopengraphprotocol_ogdescription">Beschreibung</label>
 		</languageKey>
 	</data>
