@@ -27,7 +27,6 @@ namespace Heilmann\JhOpengraphprotocol\Service;
 use TYPO3\CMS\Core\Resource\FileReference;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /**
  * Class OgRendererService
@@ -64,7 +63,8 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
         $content = '';
         $og = array();
 
-        if ($this->signalSlotDispatcher == null) {
+        if ($this->signalSlotDispatcher == null)
+        {
             /* @var \TYPO3\CMS\Extbase\Object\ObjectManager */
             $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
             $this->signalSlotDispatcher = $objectManager->get('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
@@ -72,12 +72,14 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
 
         // 2013-04-22	kraftb@webconsulting.at
         // Check if the tt_news "displaySingle" method has been called before
-        if (class_exists('tx_jhopengraphttnews_displaySingleHook')) {
+        if (class_exists('tx_jhopengraphttnews_displaySingleHook'))
+        {
             $hookObject = GeneralUtility::makeInstance('tx_jhopengraphttnews_displaySingleHook');
             if ($hookObject->singleViewDisplayed())
                 return $content;
         }
-        if (class_exists(\Heilmann\JhOpengraphTtnews\Hooks\DisplaySingle::class)) {
+        if (class_exists(\Heilmann\JhOpengraphTtnews\Hooks\DisplaySingle::class))
+        {
             $hookObject = GeneralUtility::makeInstance(\Heilmann\JhOpengraphTtnews\Hooks\DisplaySingle::class);
             if ($hookObject->singleViewDisplayed())
                 return $content;
@@ -86,20 +88,11 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
         //if there has been no return, get og properties and render output
 
         // Get title
-        if (!empty($GLOBALS['TSFE']->page['tx_jhopengraphprotocol_ogtitle'])) {
-            $og['title'] = $GLOBALS['TSFE']->page['tx_jhopengraphprotocol_ogtitle'];
-        } else {
-            $og['title'] = $GLOBALS['TSFE']->page['title'];
-        }
-        $og['title'] = htmlspecialchars($og['title']);
+        $og['title'] = htmlspecialchars(!empty($GLOBALS['TSFE']->page['tx_jhopengraphprotocol_ogtitle']) ?
+            $GLOBALS['TSFE']->page['tx_jhopengraphprotocol_ogtitle'] :
+            $GLOBALS['TSFE']->page['title']);
 
         // Get type
-        if (!empty($GLOBALS['TSFE']->page['tx_jhopengraphprotocol_ogtype'])) {
-            $og['type'] = $GLOBALS['TSFE']->page['tx_jhopengraphprotocol_ogtype'];
-        } else {
-            $og['type'] = $conf['type'];
-        }
-        $og['type'] = htmlspecialchars($og['type']);
 
         // Get image
 		$fileRelationPid = $GLOBALS['TSFE']->page['_PAGES_OVERLAY_UID'] ?: $GLOBALS['TSFE']->id;
@@ -114,6 +107,9 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
                 $og['image'][] = $fileObject;
             }
         } else {
+        $og['type'] = htmlspecialchars(!empty($GLOBALS['TSFE']->page['tx_jhopengraphprotocol_ogtype']) ?
+            $GLOBALS['TSFE']->page['tx_jhopengraphprotocol_ogtype'] :
+            $conf['type']);
             // check if an image is given in page --> media, if not use default image
             $fileObjects = $fileRepository->findByRelation($fileRelationTable, 'media', $fileRelationPid);
             if (count($fileObjects)) {
@@ -133,32 +129,28 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
         $og['url'] = htmlentities(GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL'));
 
         // Get site_name
-        if (!empty($conf['sitename'])) {
-            $og['site_name'] = $conf['sitename'];
-        } else {
-            $og['site_name'] = $GLOBALS['TSFE']->tmpl->setup['sitetitle'];
-        }
-        $og['site_name'] = htmlspecialchars($og['site_name']);
+        $og['site_name'] = htmlspecialchars(!empty($conf['sitename']) ?
+            $conf['sitename'] :
+            $GLOBALS['TSFE']->tmpl->setup['sitetitle']);
 
         // Get description
-        if (!empty($GLOBALS['TSFE']->page['tx_jhopengraphprotocol_ogdescription'])) {
+        if (!empty($GLOBALS['TSFE']->page['tx_jhopengraphprotocol_ogdescription']))
             $og['description'] = $GLOBALS['TSFE']->page['tx_jhopengraphprotocol_ogdescription'];
-        } else {
-            if (!empty($GLOBALS['TSFE']->page['description'])) {
-                $og['description'] = $GLOBALS['TSFE']->page['description'];
-            } else {
-                $og['description'] = $conf['description'];
-            }
-        }
+        else
+            $og['description'] = !empty($GLOBALS['TSFE']->page['description']) ?
+                $GLOBALS['TSFE']->page['description'] :
+                $conf['description'];
+
         $og['description'] = htmlspecialchars($og['description']);
 
         // Get locale
         $localeParts = explode('.', $GLOBALS['TSFE']->tmpl->setup['config.']['locale_all']);
-        if (isset($localeParts[0])) {
+        if (isset($localeParts[0]))
             $og['locale'] = str_replace('-', '_', $localeParts[0]);
-        }
 
         // Signal to manipulate og-properties before header creation
+        // Please do not use the second parameter ($this->cObj) in your dispatcher, but $GLOBALS['TSFE']->page instead.
+        // This allows you to use the advantage of easy multilingual page handling.
         $this->signalSlotDispatcher->dispatch(
             __CLASS__,
             'beforeHeaderCreation',
@@ -192,22 +184,13 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
                     {
                         // A og property that accepts more than one value
                         foreach ($value as $multiPropertyValue)
-                        {
                             // Render each value to a new og property meta-tag
-                            if ($key == 'image')
-                            {
-                                // Add image details
-                                $res[] = $this->buildOgImageProperties($key, $multiPropertyValue);
-                            } else
-                            {
-                                $res[] = $this->buildProperty($key, $multiPropertyValue);
-                            }
-                        }
+                            $res[] = $key == 'image' ?
+                                $this->buildOgImageProperties($key, $multiPropertyValue) :
+                                $this->buildProperty($key, $multiPropertyValue);
                     } else
-                    {
                         // A og property with child-properties
                         $res .= $this->renderHeaderLines($this->remapArray($key, $value));
-                    }
                 } else
                 {
                     // A single og property to be rendered
