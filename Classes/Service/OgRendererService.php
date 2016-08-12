@@ -113,7 +113,7 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
             // $GLOBALS['TSFE']->page['tx_jhopengraphprotocol_ogtype'] is related to table 'pages' or 'pages_language_overlay'.
 
             // Parameter 3 (uid) is always the pages' uid, as sys_file_reference always references to the pages' uid, even on pages_language_overlay
-            $overlayFileObjects = $fileRepository->findByRelation('pages_language_overlay', 'tx_jhopengraphprotocol_ogfalimages', $GLOBALS['TSFE']->id);
+            $overlayFileObjects = $fileRepository->findByRelation('pages_language_overlay', 'tx_jhopengraphprotocol_ogfalimages', $GLOBALS['TSFE']->page['_PAGES_OVERLAY_UID']);
             if (count($overlayFileObjects) > 0)
                 $fileObjects = $overlayFileObjects;
             else if (isset($GLOBALS['TCA']['pages_language_overlay']['columns']['tx_jhopengraphprotocol_ogfalimages']['l10n_mode']) &&
