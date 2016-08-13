@@ -55,7 +55,7 @@ $tempColumns = array(
                     ),
                 ),
                 'behaviour' => array(
-                    'localizationMode' => 'keep',
+                    'localizationMode' => 'select',
                     'localizeChildrenAtParentLocalization' => TRUE,
                 ),
                 'foreign_types' => array(
@@ -101,6 +101,10 @@ foreach ($tempColumns as $tempColumnKey => $tempColumnValue)
     // Set l10n_mode for pages_language_overlay
     if (isset($extConf['languageOverlay'][$tempColumnKey]['mergeIfNotBlank']) && $extConf['languageOverlay'][$tempColumnKey]['mergeIfNotBlank'])
         $tempColumns[$tempColumnKey]['l10n_mode'] = 'mergeIfNotBlank';
+
+    // Don't display language diff, it's really ugly
+    if ($tempColumnKey === 'tx_jhopengraphprotocol_ogfalimages')
+        $tempColumns[$tempColumnKey]['l10n_display'] = 'hideDiff';
 
     // Change label for tx_jhopengraphprotocol_ogfalimages if l10n_mode is 'mergeIfNotBlank' to add mode information
     if ($tempColumnKey === 'tx_jhopengraphprotocol_ogfalimages' && $tempColumns[$tempColumnKey]['l10n_mode'] === 'mergeIfNotBlank')
