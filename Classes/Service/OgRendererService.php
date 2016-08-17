@@ -229,13 +229,13 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
         if (is_object($value) && $value instanceOf FileReference)
         {
             /** @var FileReference $value */
-            $res[] = $this->buildProperty($key,
-                GeneralUtility::locationHeaderUrl($value->getPublicUrl()));
-            $res[] = $this->buildProperty($key . ':type', $value->getMimeType());
-            $res[] = $this->buildProperty($key . ':width',
-                $value->getProperty('width'));
-            $res[] = $this->buildProperty($key . ':height',
-                $value->getProperty('height'));
+            $res[] = $this->buildProperty($key, GeneralUtility::locationHeaderUrl($value->getPublicUrl()));
+            if ($value->getMimeType())
+                $res[] = $this->buildProperty($key . ':type', $value->getMimeType());
+            if ($value->getProperty('width'))
+                $res[] = $this->buildProperty($key . ':width', $value->getProperty('width'));
+            if ($value->getProperty('height'))
+                $res[] = $this->buildProperty($key . ':height', $value->getProperty('height'));
         } else if (is_string($value))
         {
             $imageSize = array();
