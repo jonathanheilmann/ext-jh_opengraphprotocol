@@ -23,6 +23,14 @@ ChangeLog
          Changes
 
  - :Version:
+         1.2.2
+
+   :Changes:
+         \* [TASK]                  Change description field to textarea
+
+         \* [BUGFIX]        #37     Not localized og tag on FE
+
+ - :Version:
          1.2.1
 
    :Changes:
