@@ -18,12 +18,25 @@ Installation
 
 - import and install the extension
 
+- configure extension in Extension Manager
+
 - include static template “Open Graph protocol”
 
 - use the Constant-Editor to edit the global Open Graph properties
 
 - use the page-settings for setting the local Open Graph properties
 
+
+.. _admin-extConfiguration:
+
+Extension configuration
+-----------------------
+
+Since version 1.2.2 you are able to control the localization mode of each field.
+
+By default localized pages do not inherit fields from default language if they are empty/blank.
+If you want to enable this behavior, configure extension jh_opengraphprotocol and set
+">FieldToInheritFromDefaultLanguage< mergeIfNotBlank".
 
 
 .. _admin-updating:
