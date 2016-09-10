@@ -1,0 +1,11 @@
+# cat=basic/enable/100; type=boolean; label=Title mergeIfNotBlank: Use title of default language if localized title is empty
+languageOverlay.tx_jhopengraphprotocol_ogtitle.mergeIfNotBlank = 0
+
+# cat=basic/enable/101; type=boolean; label=Type mergeIfNotBlank: Use type of default language if localized type is empty
+languageOverlay.tx_jhopengraphprotocol_ogtype.mergeIfNotBlank = 0
+
+# cat=basic/enable/102; type=boolean; label=Image(s) mergeIfNotBlank: Use image(s) of default language if localized image(s) is empty
+languageOverlay.tx_jhopengraphprotocol_ogfalimages.mergeIfNotBlank = 0
+
+# cat=basic/enable/103; type=boolean; label=Description mergeIfNotBlank: Use description of default language if localized description is empty
+languageOverlay.tx_jhopengraphprotocol_ogdescription.mergeIfNotBlank = 0

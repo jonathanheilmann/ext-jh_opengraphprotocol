@@ -25,9 +25,9 @@ namespace Heilmann\JhOpengraphprotocol\Service;
 ***************************************************************/
 
 use TYPO3\CMS\Core\Resource\FileReference;
+use TYPO3\CMS\Core\Resource\FileRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /**
  * Class OgRendererService
@@ -64,7 +64,8 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
         $content = '';
         $og = array();
 
-        if ($this->signalSlotDispatcher == null) {
+        if ($this->signalSlotDispatcher == null)
+        {
             /* @var \TYPO3\CMS\Extbase\Object\ObjectManager */
             $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
             $this->signalSlotDispatcher = $objectManager->get('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
@@ -72,12 +73,14 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
 
         // 2013-04-22	kraftb@webconsulting.at
         // Check if the tt_news "displaySingle" method has been called before
-        if (class_exists('tx_jhopengraphttnews_displaySingleHook')) {
+        if (class_exists('tx_jhopengraphttnews_displaySingleHook'))
+        {
             $hookObject = GeneralUtility::makeInstance('tx_jhopengraphttnews_displaySingleHook');
             if ($hookObject->singleViewDisplayed())
                 return $content;
         }
-        if (class_exists(\Heilmann\JhOpengraphTtnews\Hooks\DisplaySingle::class)) {
+        if (class_exists(\Heilmann\JhOpengraphTtnews\Hooks\DisplaySingle::class))
+        {
             $hookObject = GeneralUtility::makeInstance(\Heilmann\JhOpengraphTtnews\Hooks\DisplaySingle::class);
             if ($hookObject->singleViewDisplayed())
                 return $content;
@@ -86,76 +89,82 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
         //if there has been no return, get og properties and render output
 
         // Get title
-        if (!empty($this->cObj->data['tx_jhopengraphprotocol_ogtitle'])) {
-            $og['title'] = $this->cObj->data['tx_jhopengraphprotocol_ogtitle'];
-        } else {
-            $og['title'] = $GLOBALS['TSFE']->page['title'];
-        }
-        $og['title'] = htmlspecialchars($og['title']);
+        $og['title'] = htmlspecialchars(!empty($GLOBALS['TSFE']->page['tx_jhopengraphprotocol_ogtitle']) ?
+            $GLOBALS['TSFE']->page['tx_jhopengraphprotocol_ogtitle'] :
+            $GLOBALS['TSFE']->page['title']);
 
         // Get type
-        if (!empty($this->cObj->data['tx_jhopengraphprotocol_ogtype'])) {
-            $og['type'] = $this->cObj->data['tx_jhopengraphprotocol_ogtype'];
-        } else {
-            $og['type'] = $conf['type'];
-        }
-        $og['type'] = htmlspecialchars($og['type']);
+        $og['type'] = htmlspecialchars(!empty($GLOBALS['TSFE']->page['tx_jhopengraphprotocol_ogtype']) ?
+            $GLOBALS['TSFE']->page['tx_jhopengraphprotocol_ogtype'] :
+            $conf['type']);
 
-        // Get image
-        /** @var \TYPO3\CMS\Core\Resource\FileRepository $fileRepository */
-        $fileRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\FileRepository');
-        $fileObjects = $fileRepository->findByRelation('pages', 'tx_jhopengraphprotocol_ogfalimages', $GLOBALS['TSFE']->id);
-        if (count($fileObjects)) {
-            foreach ($fileObjects as $key => $fileObject) {
-                /** @var FileReference $fileObject */
-                $og['image'][] = $fileObject;
-            }
-        } else {
+        // Get images
+        /** @var FileRepository $fileRepository */
+        $fileRepository = GeneralUtility::makeInstance(FileRepository::class);
+
+        $fileObjects = array();
+        if ($GLOBALS['TSFE']->page['_PAGES_OVERLAY_UID'])
+        {
+            // Get images if there is a language overlay
+            // This is somehow a hack, as l10n_mode 'mergeIfNotBlack' does not work in this case.
+            // PageRepository->shouldFieldBeOverlaid does not work for config type 'inline' with "DEFAULT '0'" database config,
+            // as an empty inline field is '0', and '0' is treated as not empty.
+            // Setting 'Default NULL' in database config won't work, too, as it isn't easier to check, if value in
+            // $GLOBALS['TSFE']->page['tx_jhopengraphprotocol_ogtype'] is related to table 'pages' or 'pages_language_overlay'.
+
+            $overlayFileObjects = $fileRepository->findByRelation('pages_language_overlay', 'tx_jhopengraphprotocol_ogfalimages', $GLOBALS['TSFE']->page['_PAGES_OVERLAY_UID']);
+            if (count($overlayFileObjects) > 0)
+                $fileObjects = $overlayFileObjects;
+            else if (isset($GLOBALS['TCA']['pages_language_overlay']['columns']['tx_jhopengraphprotocol_ogfalimages']['l10n_mode']) &&
+                $GLOBALS['TCA']['pages_language_overlay']['columns']['tx_jhopengraphprotocol_ogfalimages']['l10n_mode'] === 'mergeIfNotBlank')
+                $fileObjects = $fileRepository->findByRelation('pages', 'tx_jhopengraphprotocol_ogfalimages', $GLOBALS['TSFE']->id);
+        } else
+            $fileObjects = $fileRepository->findByRelation('pages', 'tx_jhopengraphprotocol_ogfalimages', $GLOBALS['TSFE']->id);
+
+        if (count($fileObjects) === 0)
+        {
             // check if an image is given in page --> media, if not use default image
-            $fileObjects = $fileRepository->findByRelation('pages', 'media', $GLOBALS['TSFE']->id);
-            if (count($fileObjects)) {
-                foreach ($fileObjects as $key => $fileObject) {
-                    /** @var FileReference $fileObject */
-                    $og['image'][] = $fileObject;
-                }
-            } else {
+            $fileObjects = $fileRepository->findByRelation(
+                ($GLOBALS['TSFE']->page['_PAGES_OVERLAY_UID'] ? 'pages_language_overlay' : 'pages'),
+                'media',
+                ($GLOBALS['TSFE']->page['_PAGES_OVERLAY_UID'] ?:$GLOBALS['TSFE']->id)
+            );
+            if (count($fileObjects) === 0)
+            {
                 $imageFileName = $GLOBALS['TSFE']->tmpl->getFileName($conf['image']);
-                if (!empty($imageFileName)) {
+                if (!empty($imageFileName))
                     $og['image'][] = $imageFileName;
-                }
-            }
-        }
-        
+            } else
+                $og['image'] = $fileObjects;
+        } else
+            $og['image'] = $fileObjects;
+
         // Get url
         $og['url'] = htmlentities(GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL'));
 
         // Get site_name
-        if (!empty($conf['sitename'])) {
-            $og['site_name'] = $conf['sitename'];
-        } else {
-            $og['site_name'] = $GLOBALS['TSFE']->tmpl->setup['sitetitle'];
-        }
-        $og['site_name'] = htmlspecialchars($og['site_name']);
+        $og['site_name'] = htmlspecialchars(!empty($conf['sitename']) ?
+            $conf['sitename'] :
+            $GLOBALS['TSFE']->tmpl->setup['sitetitle']);
 
         // Get description
-        if (!empty($this->cObj->data['tx_jhopengraphprotocol_ogdescription'])) {
-            $og['description'] = $this->cObj->data['tx_jhopengraphprotocol_ogdescription'];
-        } else {
-            if (!empty($GLOBALS['TSFE']->page['description'])) {
-                $og['description'] = $GLOBALS['TSFE']->page['description'];
-            } else {
-                $og['description'] = $conf['description'];
-            }
-        }
+        if (!empty($GLOBALS['TSFE']->page['tx_jhopengraphprotocol_ogdescription']))
+            $og['description'] = $GLOBALS['TSFE']->page['tx_jhopengraphprotocol_ogdescription'];
+        else
+            $og['description'] = !empty($GLOBALS['TSFE']->page['description']) ?
+                $GLOBALS['TSFE']->page['description'] :
+                $conf['description'];
+
         $og['description'] = htmlspecialchars($og['description']);
 
         // Get locale
         $localeParts = explode('.', $GLOBALS['TSFE']->tmpl->setup['config.']['locale_all']);
-        if (isset($localeParts[0])) {
+        if (isset($localeParts[0]))
             $og['locale'] = str_replace('-', '_', $localeParts[0]);
-        }
 
         // Signal to manipulate og-properties before header creation
+        // Please do not use the second parameter ($this->cObj) in your dispatcher, but $GLOBALS['TSFE']->page instead.
+        // This allows you to use the advantage of easy multilingual page handling.
         $this->signalSlotDispatcher->dispatch(
             __CLASS__,
             'beforeHeaderCreation',
@@ -189,22 +198,13 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
                     {
                         // A og property that accepts more than one value
                         foreach ($value as $multiPropertyValue)
-                        {
                             // Render each value to a new og property meta-tag
-                            if ($key == 'image')
-                            {
-                                // Add image details
-                                $res[] = $this->buildOgImageProperties($key, $multiPropertyValue);
-                            } else
-                            {
-                                $res[] = $this->buildProperty($key, $multiPropertyValue);
-                            }
-                        }
+                            $res[] = $key == 'image' ?
+                                $this->buildOgImageProperties($key, $multiPropertyValue) :
+                                $this->buildProperty($key, $multiPropertyValue);
                     } else
-                    {
                         // A og property with child-properties
                         $res .= $this->renderHeaderLines($this->remapArray($key, $value));
-                    }
                 } else
                 {
                     // A single og property to be rendered
@@ -229,13 +229,13 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
         if (is_object($value) && $value instanceOf FileReference)
         {
             /** @var FileReference $value */
-            $res[] = $this->buildProperty($key,
-                GeneralUtility::locationHeaderUrl($value->getPublicUrl()));
-            $res[] = $this->buildProperty($key . ':type', $value->getMimeType());
-            $res[] = $this->buildProperty($key . ':width',
-                $value->getProperty('width'));
-            $res[] = $this->buildProperty($key . ':height',
-                $value->getProperty('height'));
+            $res[] = $this->buildProperty($key, GeneralUtility::locationHeaderUrl($value->getPublicUrl()));
+            if ($value->getMimeType())
+                $res[] = $this->buildProperty($key . ':type', $value->getMimeType());
+            if ($value->getProperty('width'))
+                $res[] = $this->buildProperty($key . ':width', $value->getProperty('width'));
+            if ($value->getProperty('height'))
+                $res[] = $this->buildProperty($key . ':height', $value->getProperty('height'));
         } else if (is_string($value))
         {
             $imageSize = array();
