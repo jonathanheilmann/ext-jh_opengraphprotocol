@@ -1,4 +1,4 @@
-config.htmlTag_setParams := appendString(xmlns:og="http://ogp.me/ns#")
+config.htmlTag_setParams := appendString( xmlns:og="http://ogp.me/ns#")
 
 includeLibs.tx_jhopengraphprotocol = EXT:jh_opengraphprotocol/Classes/Service/OgRendererService.php
 temp.tx_jhopengraphprotocol = USER
