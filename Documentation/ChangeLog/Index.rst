@@ -23,6 +23,12 @@ ChangeLog
          Changes
 
  - :Version:
+         1.2.3
+
+   :Changes:
+        \* [BUGFIX]        #45     Prepend a space to og namespace declaration
+
+ - :Version:
          1.2.2
 
    :Changes:
