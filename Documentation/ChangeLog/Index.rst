@@ -23,10 +23,16 @@ ChangeLog
          Changes
 
  - :Version:
+         1.2.4
+
+   :Changes:
+        \* [BUGFIX]         #47     Current composer version not in sync with ext_emconf.php
+
+ - :Version:
          1.2.3
 
    :Changes:
-        \* [BUGFIX]        #45     Prepend a space to og namespace declaration
+        \* [BUGFIX]         #45     Prepend a space to og namespace declaration
 
  - :Version:
          1.2.2
