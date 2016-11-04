@@ -3,7 +3,12 @@ if (!defined('TYPO3_MODE'))
     die('Access denied.');
 
 // Get extension configuration
-$extConf = \TYPO3\CMS\Core\Utility\GeneralUtility::removeDotsFromTS(unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$_EXTKEY]));
+if( isset( $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$_EXTKEY])) {
+    $extConf = \TYPO3\CMS\Core\Utility\GeneralUtility::removeDotsFromTS(unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$_EXTKEY]));
+} else {
+    $extConf = array();
+}
+
 
 // Create array with columns
 $tempColumns = array(
