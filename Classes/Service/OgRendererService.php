@@ -140,7 +140,18 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
             $og['image'] = $fileObjects;
 
         // Get url
-        $og['url'] = htmlentities(GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL'));
+        $og['url'] = GeneralUtility::getIndpEnv('TYPO3_SITE_URL');
+        $cObject = GeneralUtility::makeInstance('tslib_cObj');
+        $configurations['additionalParams'] = "&L=".(int)GeneralUtility::_GP('L');
+        $configurations['returnLast'] = 'url'; // get it as URL
+        $configurations['parameter'] =  $GLOBALS['TSFE']->id;
+        $og['url'] .= htmlspecialchars($cObject->typolink(NULL, $configurations));
+
+
+
+
+
+
 
         // Get site_name
         $og['site_name'] = htmlspecialchars(!empty($conf['sitename']) ?
