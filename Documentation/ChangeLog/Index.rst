@@ -23,6 +23,12 @@ ChangeLog
          Changes
 
  - :Version:
+         1.2.5
+
+   :Changes:
+        \* [BUGFIX]         #46     Error after installation
+
+ - :Version:
          1.2.4
 
    :Changes:
