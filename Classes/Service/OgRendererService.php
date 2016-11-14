@@ -64,12 +64,11 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
         $content = '';
         $og = array();
 
+        /* @var \TYPO3\CMS\Extbase\Object\ObjectManager */
+        $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+
         if ($this->signalSlotDispatcher == null)
-        {
-            /* @var \TYPO3\CMS\Extbase\Object\ObjectManager */
-            $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
             $this->signalSlotDispatcher = $objectManager->get('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
-        }
 
         // 2013-04-22	kraftb@webconsulting.at
         // Check if the tt_news "displaySingle" method has been called before
@@ -140,7 +139,18 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
             $og['image'] = $fileObjects;
 
         // Get url
-        $og['url'] = htmlentities(GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL'));
+        /** @var \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $cObj */
+        $cObj = $objectManager->get(\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer::class);
+        $additionalParams = GeneralUtility::_GET();
+        if (GeneralUtility::_GP('L'))
+            $additionalParams['L'] = (int)GeneralUtility::_GP('L');
+        unset($additionalParams['id']);
+        $lConf = [
+            'additionalParams' => '&' . GeneralUtility::implodeArrayForUrl('', $additionalParams),
+            'parameter' => $GLOBALS['TSFE']->id
+        ];
+        $og['url'] = htmlentities($cObj->typoLink_URL($lConf));
+
 
         // Get site_name
         $og['site_name'] = htmlspecialchars(!empty($conf['sitename']) ?
