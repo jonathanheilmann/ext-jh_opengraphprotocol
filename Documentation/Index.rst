@@ -29,7 +29,7 @@ Open Graph protocol
 		Open Graph protocol, social network, facebook
 
 	:Copyright:
-		2012-2016
+		2012-2017
 
 	:Author:
 		Jonathan Heilmann

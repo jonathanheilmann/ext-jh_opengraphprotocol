@@ -23,6 +23,14 @@ ChangeLog
          Changes
 
  - :Version:
+         1.2.6
+
+   :Changes:
+        \* [FOLLOWUP][BUGFIX]   #48 #52   Error after installation
+
+        \* [BUGFIX]         #53     Change composer.json typo3/cms requirement to OR instead of AND
+
+ - :Version:
          1.2.5
 
    :Changes:
