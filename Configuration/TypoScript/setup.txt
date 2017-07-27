@@ -1,7 +1,7 @@
 config.htmlTag_setParams := appendString( xmlns:og="http://ogp.me/ns#")
 
 includeLibs.tx_jhopengraphprotocol = EXT:jh_opengraphprotocol/Classes/Service/OgRendererService.php
-temp.tx_jhopengraphprotocol = USER
+temp.tx_jhopengraphprotocol = USER_INT
 temp.tx_jhopengraphprotocol {
     userFunc = Heilmann\JhOpengraphprotocol\Service\OgRendererService->main
     type = {$plugin.tx_jhopengraphprotocol.type}
