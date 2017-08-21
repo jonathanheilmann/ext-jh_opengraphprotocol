@@ -23,6 +23,14 @@ ChangeLog
          Changes
 
  - :Version:
+         1.3.0
+
+   :Changes:
+        \* [TASK]           #54     Compatibility with TYPO3 8
+
+        \* [BUGFIX]         #51     Non realURL urls rendered/generated
+
+ - :Version:
          1.2.6
 
    :Changes:
