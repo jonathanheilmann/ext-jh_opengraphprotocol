@@ -9,7 +9,7 @@
   },
   "version": "1.3.0-dev",
   "require": {
-    "typo3/cms": "~6.2||~7.6"
+    "typo3/cms": "~6.2||~7.6||~8.7"
   },
   "replace": {
     "jh_opengraphprotocol": "self.version",
