@@ -128,6 +128,20 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
                 'media',
                 ($GLOBALS['TSFE']->page['_PAGES_OVERLAY_UID'] ?:$GLOBALS['TSFE']->id)
             );
+            if (count($fileObjects) === 0) {
+                // no image found on current page, crawl parents.
+                foreach ($GLOBALS['TSFE']->rootLine as $page) {
+                    if ($page['uid'] === $GLOBALS['TSFE']->id) {
+                        // don´t fetch same page again.
+                        continue;
+                    }
+                    $fileObjects = $fileRepository->findByRelation('pages', 'tx_jhopengraphprotocol_ogfalimages', $page['uid']);
+                    if (count($fileObjects) > 0) {
+                        // found an image, stop crawling.
+                        break;
+                    }
+                }
+            }
             if (count($fileObjects) === 0)
             {
                 $imageFileName = $GLOBALS['TSFE']->tmpl->getFileName($conf['image']);
