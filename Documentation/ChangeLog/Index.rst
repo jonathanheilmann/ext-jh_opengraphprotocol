@@ -26,7 +26,9 @@ ChangeLog
          1.3.1
 
    :Changes:
-        \* [BUGFIX]                Force absolute URL for og:url
+        \* [BUG]            #59     Absolute URL for "og:url"
+
+        \* [TASK]           #57     Move TCA modifications to Configuration/TCA/Overrides
 
  - :Version:
          1.3.0
