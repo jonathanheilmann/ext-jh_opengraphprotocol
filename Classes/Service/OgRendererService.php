@@ -147,6 +147,7 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
         unset($additionalParams['id']);
         $lConf = [
             'additionalParams' => '&' . GeneralUtility::implodeArrayForUrl('', $additionalParams),
+            'forceAbsoluteUrl' => '1',
             'parameter' => $GLOBALS['TSFE']->id
         ];
         $og['url'] = htmlentities($cObj->typoLink_URL($lConf));

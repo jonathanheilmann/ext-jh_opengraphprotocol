@@ -26,6 +26,7 @@ ChangeLog
          1.3.1
 
    :Changes:
+        \* [BUGFIX]                Force absolute URL for og:url
 
  - :Version:
          1.3.0
