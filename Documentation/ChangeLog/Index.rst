@@ -26,6 +26,8 @@ ChangeLog
          1.3.1
 
    :Changes:
+        \* [TASK]                   Remove TYPO3 6.2 support
+
         \* [BUG]            #59     Absolute URL for "og:url"
 
         \* [TASK]           #57     Move TCA modifications to Configuration/TCA/Overrides
