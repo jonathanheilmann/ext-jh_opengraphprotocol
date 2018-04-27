@@ -23,6 +23,11 @@ ChangeLog
          Changes
 
  - :Version:
+         1.3.1
+
+   :Changes:
+
+ - :Version:
          1.3.0
 
    :Changes:
