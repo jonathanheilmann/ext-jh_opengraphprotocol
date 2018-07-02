@@ -104,6 +104,9 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
         $fileObjects = array();
         if ($GLOBALS['TSFE']->page['_PAGES_OVERLAY_UID'])
         {
+            // Get extension configuration
+            $extConf = isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['jh_opengraphprotocol']) ? GeneralUtility::removeDotsFromTS(unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['jh_opengraphprotocol'])) : array();
+
             // Get images if there is a language overlay
             // This is somehow a hack, as l10n_mode 'mergeIfNotBlack' does not work in this case.
             // PageRepository->shouldFieldBeOverlaid does not work for config type 'inline' with "DEFAULT '0'" database config,
@@ -112,11 +115,12 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
             // $GLOBALS['TSFE']->page['tx_jhopengraphprotocol_ogtype'] is related to table 'pages' or 'pages_language_overlay'.
 
             $overlayFileObjects = $fileRepository->findByRelation('pages_language_overlay', 'tx_jhopengraphprotocol_ogfalimages', $GLOBALS['TSFE']->page['_PAGES_OVERLAY_UID']);
-            if (count($overlayFileObjects) > 0)
+            if (count($overlayFileObjects) > 0) {
                 $fileObjects = $overlayFileObjects;
-            else if (isset($GLOBALS['TCA']['pages_language_overlay']['columns']['tx_jhopengraphprotocol_ogfalimages']['l10n_mode']) &&
-                $GLOBALS['TCA']['pages_language_overlay']['columns']['tx_jhopengraphprotocol_ogfalimages']['l10n_mode'] === 'mergeIfNotBlank')
+            } else if (isset($extConf['languageOverlay']['tx_jhopengraphprotocol_ogfalimages']['mergeIfNotBlank']) &&
+                $extConf['languageOverlay']['tx_jhopengraphprotocol_ogfalimages']['mergeIfNotBlank']) {
                 $fileObjects = $fileRepository->findByRelation('pages', 'tx_jhopengraphprotocol_ogfalimages', $GLOBALS['TSFE']->id);
+            }
         } else
             $fileObjects = $fileRepository->findByRelation('pages', 'tx_jhopengraphprotocol_ogfalimages', $GLOBALS['TSFE']->id);
 

@@ -7,7 +7,7 @@
   "support": {
     "issues": "https://github.com/jonathanheilmann/ext-jh_opengraphprotocol/issues"
   },
-  "version": "1.3.1",
+  "version": "1.3.2",
   "require": {
     "typo3/cms": "~7.6||~8.7"
   },

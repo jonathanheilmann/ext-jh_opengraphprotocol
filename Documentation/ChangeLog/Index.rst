@@ -23,6 +23,12 @@ ChangeLog
          Changes
 
  - :Version:
+         1.3.2
+
+   :Changes:
+        \* [BUG]            #63     TYPO3 8 and mergeIfNotBlank Problem
+
+ - :Version:
          1.3.1
 
    :Changes:
