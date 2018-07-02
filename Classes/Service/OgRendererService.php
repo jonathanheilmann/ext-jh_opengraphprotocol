@@ -244,7 +244,13 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
         if (is_object($value) && $value instanceOf FileReference)
         {
             /** @var FileReference $value */
-            $res[] = $this->buildProperty($key, GeneralUtility::locationHeaderUrl($value->getPublicUrl()));
+            $url = GeneralUtility::locationHeaderUrl($value->getPublicUrl());
+            if (substr($url, 0, 8) === 'https://') {
+                $res[] = $this->buildProperty($key . ':secure_url', $url);
+                $url = str_replace('https://', 'http://', $url);
+            }
+            $res[] = $this->buildProperty($key, $url);
+
             if ($value->getMimeType())
                 $res[] = $this->buildProperty($key . ':type', $value->getMimeType());
             if ($value->getProperty('width'))

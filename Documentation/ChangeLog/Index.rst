@@ -23,6 +23,12 @@ ChangeLog
          Changes
 
  - :Version:
+         1.4.0
+
+   :Changes:
+        \* [ENHANCEMENT]    #66     og:image:secure_url
+
+ - :Version:
          1.3.2
 
    :Changes:
