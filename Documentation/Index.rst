@@ -58,5 +58,6 @@ Open Graph protocol
    User/Index
    Administrator/Index
    Configuration/Index
+   HowTo/Index
    ChangeLog/Index
    Targets

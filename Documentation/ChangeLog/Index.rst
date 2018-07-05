@@ -28,6 +28,8 @@ ChangeLog
    :Changes:
         \* [ENHANCEMENT]    #66     og:image:secure_url
 
+        \* [DOCUMENTATION]  #33     Add fb:app_id
+
  - :Version:
          1.3.2
 
