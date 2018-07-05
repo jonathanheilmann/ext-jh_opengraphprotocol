@@ -14,7 +14,7 @@ $EM_CONF[$_EXTKEY] = array (
   'title' => 'Open Graph protocol',
   'description' => 'Adds the Open Graph protocol properties in meta-tags to the html-header supporting multilingual-websites.',
   'category' => 'plugin',
-  'version' => '1.3.0',
+  'version' => '1.4.0-dev',
   'state' => 'stable',
   'uploadfolder' => false,
   'createDirs' => '',
@@ -26,7 +26,7 @@ $EM_CONF[$_EXTKEY] = array (
   array (
     'depends' => 
     array (
-      'typo3' => '6.2.0-8.7.99',
+      'typo3' => '7.6.0-8.7.99',
     ),
     'conflicts' => 
     array (

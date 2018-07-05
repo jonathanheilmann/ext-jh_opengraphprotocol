@@ -60,7 +60,8 @@ Constants
          string
 
    Description
-         Default image that should be shown as thumbnail
+         Default image(s) that should be shown as thumbnail(s), define multiple images as comma-separated list (since
+         version 1.4.0)
 
    Default
          \
@@ -92,6 +93,22 @@ Constants
 
    Description
          Description of page (recommended to set local on each page)
+
+   Default
+         \
+
+
+.. container:: table-row
+
+   Property
+         excludedProperties
+
+   Data type
+         string
+
+   Description
+         Excluded properties: OGP properties to exclude from rendering by EXT:jh_opengraphprotocol as comma-separated
+         list (e.g. `title, description`) (Since version 1.4.0)
 
    Default
          \

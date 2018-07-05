@@ -23,6 +23,38 @@ ChangeLog
          Changes
 
  - :Version:
+         1.4.0
+
+   :Changes:
+        \* [FEATURE]        #34     Define multiple images in typoscript
+
+        \* [ENHANCEMENT]    #66     og:image:secure_url
+
+        \* [ENHANCEMENT]    #64     title can't be altered (added `excludedProperties` constant)
+
+        \* [DOCUMENTATION]  #68     Update settings
+
+        \* [DOCUMENTATION]  #65     Add prefix og: http://ogp.me/ns#
+
+        \* [DOCUMENTATION]  #33     Add fb:app_id
+
+ - :Version:
+         1.3.2
+
+   :Changes:
+        \* [BUG]            #63     TYPO3 8 and mergeIfNotBlank Problem
+
+ - :Version:
+         1.3.1
+
+   :Changes:
+        \* [TASK]                   Remove TYPO3 6.2 support
+
+        \* [BUG]            #59     Absolute URL for "og:url"
+
+        \* [TASK]           #57     Move TCA modifications to Configuration/TCA/Overrides
+
+ - :Version:
          1.3.0
 
    :Changes:

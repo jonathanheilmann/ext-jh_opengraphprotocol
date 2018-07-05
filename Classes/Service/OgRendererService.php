@@ -4,7 +4,7 @@ namespace Heilmann\JhOpengraphprotocol\Service;
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2014-2016 Jonathan Heilmann <mail@jonathan-heilmann.de>
+*  (c) 2014-2018 Jonathan Heilmann <mail@jonathan-heilmann.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -54,9 +54,11 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
     /**
      * Main-function to render the Open Graph protocol content.
      *
-     * @param	string	$content
-     * @param	array		$conf
-     * @return	string
+     * @param    string $content
+     * @param    array $conf
+     * @return    string
+     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
+     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      */
     public function main($content, $conf)
     {
@@ -104,6 +106,9 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
         $fileObjects = array();
         if ($GLOBALS['TSFE']->page['_PAGES_OVERLAY_UID'])
         {
+            // Get extension configuration
+            $extConf = isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['jh_opengraphprotocol']) ? GeneralUtility::removeDotsFromTS(unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['jh_opengraphprotocol'])) : array();
+
             // Get images if there is a language overlay
             // This is somehow a hack, as l10n_mode 'mergeIfNotBlack' does not work in this case.
             // PageRepository->shouldFieldBeOverlaid does not work for config type 'inline' with "DEFAULT '0'" database config,
@@ -112,11 +117,12 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
             // $GLOBALS['TSFE']->page['tx_jhopengraphprotocol_ogtype'] is related to table 'pages' or 'pages_language_overlay'.
 
             $overlayFileObjects = $fileRepository->findByRelation('pages_language_overlay', 'tx_jhopengraphprotocol_ogfalimages', $GLOBALS['TSFE']->page['_PAGES_OVERLAY_UID']);
-            if (count($overlayFileObjects) > 0)
+            if (count($overlayFileObjects) > 0) {
                 $fileObjects = $overlayFileObjects;
-            else if (isset($GLOBALS['TCA']['pages_language_overlay']['columns']['tx_jhopengraphprotocol_ogfalimages']['l10n_mode']) &&
-                $GLOBALS['TCA']['pages_language_overlay']['columns']['tx_jhopengraphprotocol_ogfalimages']['l10n_mode'] === 'mergeIfNotBlank')
+            } else if (isset($extConf['languageOverlay']['tx_jhopengraphprotocol_ogfalimages']['mergeIfNotBlank']) &&
+                $extConf['languageOverlay']['tx_jhopengraphprotocol_ogfalimages']['mergeIfNotBlank']) {
                 $fileObjects = $fileRepository->findByRelation('pages', 'tx_jhopengraphprotocol_ogfalimages', $GLOBALS['TSFE']->id);
+            }
         } else
             $fileObjects = $fileRepository->findByRelation('pages', 'tx_jhopengraphprotocol_ogfalimages', $GLOBALS['TSFE']->id);
 
@@ -168,14 +174,14 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
             if (count($fileObjects) === 0)
             {
                 // use default image from TypoScript setup
-                $imageFileName = $GLOBALS['TSFE']->tmpl->getFileName($conf['image']);
-                if (!empty($imageFileName))
-                    $og['image'][] = $imageFileName;
+                $imageFileNames = GeneralUtility::trimExplode(',', $conf['image'], true);
+                foreach ($imageFileNames as $imageFileName)
+                    $og['image'][] = $GLOBALS['TSFE']->tmpl->getFileName($imageFileName);
             } else
                 $og['image'] = $fileObjects;
         } else
             $og['image'] = $fileObjects;
-
+        
         // Get url
         /** @var \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $cObj */
         $cObj = $objectManager->get(\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer::class);
@@ -185,6 +191,7 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
         unset($additionalParams['id']);
         $lConf = [
             'additionalParams' => '&' . GeneralUtility::implodeArrayForUrl('', $additionalParams),
+            'forceAbsoluteUrl' => '1',
             'parameter' => $GLOBALS['TSFE']->id
         ];
         $og['url'] = htmlentities($cObj->typoLink_URL($lConf));
@@ -220,7 +227,7 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
         );
 
         //add tags to html-header
-        $GLOBALS['TSFE']->additionalHeaderData[$extKey] = $this->renderHeaderLines($og);
+        $GLOBALS['TSFE']->additionalHeaderData[$extKey] = $this->renderHeaderLines($og, $conf);
 
         return $content;
     }
@@ -228,14 +235,25 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
     /**
      * Renders the header lines to be added from array
      *
-     * @param	array		$array
-     * @return	string
+     * @param    array $array
+     * @param array $conf
+     * @return    string
      */
-    protected function renderHeaderLines($array)
+    protected function renderHeaderLines($array, $conf = [])
     {
         $res = array();
+        // Get array of excluded properties
+        $excludedProperties = isset($conf['excludedProperties'])
+            ? GeneralUtility::trimExplode(',', $conf['excludedProperties'], true)
+            : [];
+
         foreach ($array as $key => $value)
         {
+            // Skip excluded properties
+            if (in_array($key, $excludedProperties)) {
+                continue;
+            }
+
             if (!empty($value))
             {
                 // Skip empty values to prevent from empty og property
@@ -277,7 +295,13 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
         if (is_object($value) && $value instanceOf FileReference)
         {
             /** @var FileReference $value */
-            $res[] = $this->buildProperty($key, GeneralUtility::locationHeaderUrl($value->getPublicUrl()));
+            $url = GeneralUtility::locationHeaderUrl($value->getPublicUrl());
+            if (substr($url, 0, 8) === 'https://') {
+                $res[] = $this->buildProperty($key . ':secure_url', $url);
+                $url = str_replace('https://', 'http://', $url);
+            }
+            $res[] = $this->buildProperty($key, $url);
+
             if ($value->getMimeType())
                 $res[] = $this->buildProperty($key . ':type', $value->getMimeType());
             if ($value->getProperty('width'))
