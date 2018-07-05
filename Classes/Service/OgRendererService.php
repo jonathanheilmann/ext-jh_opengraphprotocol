@@ -138,7 +138,7 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
             // crawl parents if enabled in extension configuration
             $extConf = isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['jh_opengraphprotocol'])
                 ? GeneralUtility::removeDotsFromTS(unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['jh_opengraphprotocol']))
-                : []
+                : [];
             if (isset($extConf['crawlParents']['image']) && $extConf['crawlParents']['image'] && count($fileObjects) === 0) {
                 // no image found on current page, crawl parents
                 foreach ($GLOBALS['TSFE']->rootLine as $page)
