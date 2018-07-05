@@ -122,28 +122,52 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
 
         if (count($fileObjects) === 0)
         {
-            // check if an image is given in page --> media, if not use default image
+            // check if an image is given in page --> media
             $fileObjects = $fileRepository->findByRelation(
                 ($GLOBALS['TSFE']->page['_PAGES_OVERLAY_UID'] ? 'pages_language_overlay' : 'pages'),
                 'media',
                 ($GLOBALS['TSFE']->page['_PAGES_OVERLAY_UID'] ?:$GLOBALS['TSFE']->id)
             );
-            if (count($fileObjects) === 0) {
-                // no image found on current page, crawl parents.
-                foreach ($GLOBALS['TSFE']->rootLine as $page) {
-                    if ($page['uid'] === $GLOBALS['TSFE']->id) {
-                        // don´t fetch same page again.
+
+            // crawl parents if enabled in extension configuration
+            $extConf = isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['jh_opengraphprotocol'])
+                ? GeneralUtility::removeDotsFromTS(unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['jh_opengraphprotocol']))
+                : []
+            if (isset($extConf['crawlParents']['image']) && $extConf['crawlParents']['image'] && count($fileObjects) === 0) {
+                // no image found on current page, crawl parents
+                foreach ($GLOBALS['TSFE']->rootLine as $page)
+                {
+                    if (($page['_PAGES_OVERLAY_UID'] ?:$page['uid']) === ($GLOBALS['TSFE']->page['_PAGES_OVERLAY_UID'] ?:$GLOBALS['TSFE']->id))
+                        // don't fetch same page again
                         continue;
-                    }
-                    $fileObjects = $fileRepository->findByRelation('pages', 'tx_jhopengraphprotocol_ogfalimages', $page['uid']);
-                    if (count($fileObjects) > 0) {
-                        // found an image, stop crawling.
+
+                    $fileObjects = $fileRepository->findByRelation(
+                        ($page['_PAGES_OVERLAY_UID'] ? 'pages_language_overlay' : 'pages'),
+                        'tx_jhopengraphprotocol_ogfalimages',
+                        ($page['_PAGES_OVERLAY_UID'] ?:$page['uid'])
+                    );
+
+                    if (count($fileObjects) === 0)
+                    {
+                        // check for images in page --> media
+                        $fileObjects = $fileRepository->findByRelation(
+                            ($page['_PAGES_OVERLAY_UID'] ? 'pages_language_overlay' : 'pages'),
+                            'media',
+                            ($page['_PAGES_OVERLAY_UID'] ?:$page['uid'])
+                        );
+
+                        if (count($fileObjects) > 0)
+                            // found an image, stop crawling
+                            break;
+                    } else
+                        // found an image, stop crawling
                         break;
-                    }
                 }
             }
+
             if (count($fileObjects) === 0)
             {
+                // use default image from TypoScript setup
                 $imageFileName = $GLOBALS['TSFE']->tmpl->getFileName($conf['image']);
                 if (!empty($imageFileName))
                     $og['image'][] = $imageFileName;
