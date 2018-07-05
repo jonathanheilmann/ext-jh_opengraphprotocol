@@ -32,6 +32,8 @@ ChangeLog
 
         \* [ENHANCEMENT]    #64     title can't be altered (added `excludedProperties` constant)
 
+        \* [ENHANCEMENT]    #60     If no Image is defined on page, check parent Pages (requires activation in extension manager)
+
         \* [DOCUMENTATION]  #68     Update settings
 
         \* [DOCUMENTATION]  #65     Add prefix og: http://ogp.me/ns#

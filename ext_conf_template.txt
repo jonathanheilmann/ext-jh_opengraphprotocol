@@ -9,3 +9,6 @@ languageOverlay.tx_jhopengraphprotocol_ogfalimages.mergeIfNotBlank = 0
 
 # cat=basic/enable/103; type=boolean; label=Description mergeIfNotBlank: Use description of default language if localized description is empty
 languageOverlay.tx_jhopengraphprotocol_ogdescription.mergeIfNotBlank = 0
+
+# cat=basic/enable/200; type=boolean; label=Description crawlParents for image: Crawl parent pages for image, if there is no image on current page (image from current page's media is preferred before crawling parents, while crawling jh_opengraphprotocol image field is preferred to page's media field)
+crawlParents.image = 0

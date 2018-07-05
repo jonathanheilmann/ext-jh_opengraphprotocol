@@ -56,6 +56,11 @@ The content of each Open Graph property is taken by this priority:
          page-media
 
    :third:
+         If `crawlParents.image` is enabled in extension manager, jh_opengraphprotocol crawls the page rootline until
+         an image is found or root is reached.
+         While crawling jh_opengraphprotocol image field is preferred to page's media field.
+         \
+         If `crawlParents.image` is NOT enabled:
          global
 
  - :property:
@@ -108,8 +113,3 @@ The content of each Open Graph property is taken by this priority:
 
 
 .. ###### END~OF~TABLE ######
-
-For example the extension tries to render the image-property:If there
-is no image defined local within the page-properties, if tries to
-fetch a image from the global TypoScript Settings. If there is no
-image, too, no image property will be rendered.
