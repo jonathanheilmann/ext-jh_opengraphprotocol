@@ -315,6 +315,10 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
             if (isset($parsedUrl['host']) && $parsedUrl['host'])
             {
                 // Analyze image with given host
+                if (substr($value, 0, 8) === 'https://') {
+                    $res[] = $this->buildProperty($key . ':secure_url', $value);
+                    $value = str_replace('https://', 'http://', $value);
+                }
                 $res[] = $this->buildProperty($key, $value);
 
                 if (GeneralUtility::getHostname() == $parsedUrl['host'])
@@ -337,8 +341,12 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
                 {
                     $imageSize = getimagesize($absImagePath);
 
-                    $res[] = $this->buildProperty($key,
-                        GeneralUtility::locationHeaderUrl($value));
+                    $url = GeneralUtility::locationHeaderUrl($value);
+                    if (substr($url, 0, 8) === 'https://') {
+                        $res[] = $this->buildProperty($key . ':secure_url', $url);
+                        $url = str_replace('https://', 'http://', $url);
+                    }
+                    $res[] = $this->buildProperty($key, $url);
                 }
             }
 
