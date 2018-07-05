@@ -30,6 +30,8 @@ ChangeLog
 
         \* [DOCUMENTATION]  #68     Update settings
 
+        \* [DOCUMENTATION]  #65     Add prefix og: http://ogp.me/ns#
+
         \* [DOCUMENTATION]  #33     Add fb:app_id
 
  - :Version:
