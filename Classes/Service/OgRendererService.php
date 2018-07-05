@@ -4,7 +4,7 @@ namespace Heilmann\JhOpengraphprotocol\Service;
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2014-2016 Jonathan Heilmann <mail@jonathan-heilmann.de>
+*  (c) 2014-2018 Jonathan Heilmann <mail@jonathan-heilmann.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -54,9 +54,11 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
     /**
      * Main-function to render the Open Graph protocol content.
      *
-     * @param	string	$content
-     * @param	array		$conf
-     * @return	string
+     * @param    string $content
+     * @param    array $conf
+     * @return    string
+     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
+     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      */
     public function main($content, $conf)
     {
@@ -134,14 +136,14 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
             );
             if (count($fileObjects) === 0)
             {
-                $imageFileName = $GLOBALS['TSFE']->tmpl->getFileName($conf['image']);
-                if (!empty($imageFileName))
-                    $og['image'][] = $imageFileName;
+                $imageFileNames = GeneralUtility::trimExplode(',', $conf['image'], true);
+                foreach ($imageFileNames as $imageFileName)
+                    $og['image'][] = $GLOBALS['TSFE']->tmpl->getFileName($imageFileName);
             } else
                 $og['image'] = $fileObjects;
         } else
             $og['image'] = $fileObjects;
-
+        
         // Get url
         /** @var \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $cObj */
         $cObj = $objectManager->get(\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer::class);

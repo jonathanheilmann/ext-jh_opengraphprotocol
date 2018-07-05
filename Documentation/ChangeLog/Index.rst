@@ -26,6 +26,8 @@ ChangeLog
          1.4.0
 
    :Changes:
+        \* [FEATURE]        #34     Define multiple images in typoscript
+
         \* [ENHANCEMENT]    #66     og:image:secure_url
 
         \* [DOCUMENTATION]  #68     Update settings
