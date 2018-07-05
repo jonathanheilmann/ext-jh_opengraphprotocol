@@ -189,7 +189,7 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
         );
 
         //add tags to html-header
-        $GLOBALS['TSFE']->additionalHeaderData[$extKey] = $this->renderHeaderLines($og);
+        $GLOBALS['TSFE']->additionalHeaderData[$extKey] = $this->renderHeaderLines($og, $conf);
 
         return $content;
     }
@@ -197,14 +197,25 @@ class OgRendererService implements \TYPO3\CMS\Core\SingletonInterface
     /**
      * Renders the header lines to be added from array
      *
-     * @param	array		$array
-     * @return	string
+     * @param    array $array
+     * @param array $conf
+     * @return    string
      */
-    protected function renderHeaderLines($array)
+    protected function renderHeaderLines($array, $conf = [])
     {
         $res = array();
+        // Get array of excluded properties
+        $excludedProperties = isset($conf['excludedProperties'])
+            ? GeneralUtility::trimExplode(',', $conf['excludedProperties'], true)
+            : [];
+
         foreach ($array as $key => $value)
         {
+            // Skip excluded properties
+            if (in_array($key, $excludedProperties)) {
+                continue;
+            }
+
             if (!empty($value))
             {
                 // Skip empty values to prevent from empty og property

@@ -10,3 +10,6 @@ plugin.tx_jhopengraphprotocol.sitename =
 
 #cat=plugin.tx_jhopengraphprotocol/description/040; type=string; label=Description;
 plugin.tx_jhopengraphprotocol.description =
+
+#cat=plugin.tx_jhopengraphprotocol/excludedProperties/050; type=string; label=Excluded properties: OGP properties to exclude from rendering by EXT:jh_opengraphprotocol as comma-separated list (e.g. `title, description`);
+plugin.tx_jhopengraphprotocol.excludedProperties =

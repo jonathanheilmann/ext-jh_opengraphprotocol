@@ -98,6 +98,22 @@ Constants
          \
 
 
+.. container:: table-row
+
+   Property
+         excludedProperties
+
+   Data type
+         string
+
+   Description
+         Excluded properties: OGP properties to exclude from rendering by EXT:jh_opengraphprotocol as comma-separated
+         list (e.g. `title, description`) (Since version 1.4.0)
+
+   Default
+         \
+
+
 .. ###### END~OF~TABLE ######
 
 [tsref:plugin.tx\_jhopengraphprotocol]

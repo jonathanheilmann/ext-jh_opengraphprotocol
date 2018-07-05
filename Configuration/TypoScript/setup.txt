@@ -8,6 +8,7 @@ temp.tx_jhopengraphprotocol {
     image = {$plugin.tx_jhopengraphprotocol.image}
     sitename = {$plugin.tx_jhopengraphprotocol.sitename}
     description = {$plugin.tx_jhopengraphprotocol.description}
+    excludedProperties = {$plugin.tx_jhopengraphprotocol.excludedProperties}
 }
 page.669 < temp.tx_jhopengraphprotocol
 

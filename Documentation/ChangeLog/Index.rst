@@ -30,6 +30,8 @@ ChangeLog
 
         \* [ENHANCEMENT]    #66     og:image:secure_url
 
+        \* [ENHANCEMENT]    #64     title can't be altered (added `excludedProperties` constant)
+
         \* [DOCUMENTATION]  #68     Update settings
 
         \* [DOCUMENTATION]  #65     Add prefix og: http://ogp.me/ns#
