@@ -6,7 +6,7 @@ CREATE TABLE pages (
 	tx_jhopengraphprotocol_ogtype tinytext,
 	tx_jhopengraphprotocol_ogimage text,
 	tx_jhopengraphprotocol_ogfalimages int(11) unsigned DEFAULT '0',
-	tx_jhopengraphprotocol_ogdescription tinytext
+	tx_jhopengraphprotocol_ogdescription varchar(300)
 );
 
 #
@@ -17,5 +17,5 @@ CREATE TABLE pages_language_overlay (
 	tx_jhopengraphprotocol_ogtype tinytext,
 	tx_jhopengraphprotocol_ogimage text,
 	tx_jhopengraphprotocol_ogfalimages int(11) unsigned DEFAULT '0',
-	tx_jhopengraphprotocol_ogdescription tinytext
+	tx_jhopengraphprotocol_ogdescription varchar(300)
 );
